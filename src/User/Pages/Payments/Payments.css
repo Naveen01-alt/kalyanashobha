@@ -1,0 +1,269 @@
+/* --- FONTS & VARIABLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Mulish:wght@300;400;600;700&display=swap');
+
+:root {
+  --bg-color: #FDFBF7;
+  --card-bg: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-secondary: #5A5A5A;
+  --accent-gold: #C5A059;
+  --border-light: #E0E0E0;
+  
+  /* Status Colors */
+  --success-bg: #ECFDF5;
+  --success-text: #047857;
+  --pending-bg: #FFFBEB;
+  --pending-text: #B45309;
+  --failed-bg: #FEF2F2;
+  --failed-text: #B91C1C;
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: 'Mulish', sans-serif;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* --- MAIN CONTAINER --- */
+.pay-dashboard {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px 80px;
+  min-height: 80vh;
+}
+
+/* --- HEADER SECTION --- */
+.pay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.pay-title {
+  font-family: 'Merriweather', serif;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* --- TABS --- */
+.pay-tabs {
+  display: inline-flex;
+  background: var(--card-bg);
+  padding: 5px;
+  border-radius: 50px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.tab-item {
+  background: transparent;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 40px;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background-color: var(--text-primary); /* Charcoal Active */
+  color: #fff;
+}
+
+.tab-item:hover:not(.active) {
+  color: var(--accent-gold);
+}
+
+/* --- TABLE LAYOUT (DESKTOP) --- */
+.pay-content {
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  overflow: hidden; /* Clips corners */
+}
+
+/* Grid Definition */
+.pay-row {
+  display: grid;
+  /* Columns: Date | Amount | Ref | (User) | Status */
+  grid-template-columns: 1.2fr 1fr 1.5fr 1.2fr 1fr;
+  padding: 18px 25px;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s;
+}
+
+/* Header Row Specifics */
+.header-row {
+  background-color: #FAFAFA;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-light);
+}
+
+.data-row:last-child {
+  border-bottom: none;
+}
+
+.data-row:hover {
+  background-color: #FCFCFC;
+}
+
+/* --- COLUMN STYLING --- */
+.cell-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-primary {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.text-secondary, .time-text {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* Amount Column */
+.amount-text {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+/* Reference Badge */
+.ref-badge {
+  background-color: #F3F4F6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: -0.5px;
+}
+
+/* Status Pills */
+.status-pill {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  min-width: 80px;
+}
+
+.status-pill.success { background: var(--success-bg); color: var(--success-text); }
+.status-pill.failed { background: var(--failed-bg); color: var(--failed-text); }
+.status-pill.pending { background: var(--pending-bg); color: var(--pending-text); }
+
+/* --- EMPTY STATE --- */
+.pay-empty {
+  padding: 60px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* --- RESPONSIVE (MOBILE CARD VIEW) --- */
+@media (max-width: 768px) {
+  
+  .pay-dashboard {
+    padding: 0 15px 40px;
+    margin-top: 20px;
+  }
+
+  .pay-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .pay-title {
+    font-size: 1.5rem;
+  }
+
+  .pay-tabs {
+    width: 100%;
+    display: flex;
+  }
+
+  .tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  /* HIDE TABLE HEADER ON MOBILE */
+  .header-row {
+    display: none;
+  }
+
+  .pay-content {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+
+  /* TRANSFORM ROWS INTO CARDS */
+  .data-row {
+    display: flex; /* Switch from Grid to Flex */
+    flex-direction: column;
+    background: var(--card-bg);
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    gap: 12px;
+  }
+
+  /* ALIGN COLUMNS inside the card */
+  .col {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* USE DATA-LABEL ATTRIBUTE FOR MOBILE LABELS */
+  .col::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* Alignment adjustments for mobile right side */
+  .cell-wrap {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  /* Special handling for Status to sit at top right or bottom */
+  .col-status {
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-light);
+    margin-top: 5px;
+  }
+}

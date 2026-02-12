@@ -1,0 +1,157 @@
+:root {
+  --sidebar-bg: #0f172a;       /* Deep Slate */
+  --sidebar-text: #94a3b8;     /* Muted Text */
+  --sidebar-text-hover: #fff;  /* White on Hover */
+  --brand-color: #b1b604;      /* Modern Orange */
+  --active-bg: transparent; /* Low opacity orange for active state */
+  --hover-bg: #1e293b;         /* Lighter Slate for hover */
+}
+
+/* 1. Container - Clean & Fixed */
+.ks-sidebar-container {
+  width: 260px;
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle border */
+  z-index: 50;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 2. Header - Minimal Branding */
+.ks-sidebar-header {
+  padding: 32px 24px 20px; /* More top padding */
+}
+
+.ks-sidebar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.5px; /* Tight tracking for modern feel */
+}
+
+.ks-sidebar-subtitle {
+  font-size: 11px;
+  color: var(--sidebar-text);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+  opacity: 0.7;
+}
+
+/* 3. Navigation Area */
+.ks-sidebar-nav {
+  flex: 1;
+  padding: 20px 16px; /* Padding on sides so items don't touch edges */
+  overflow-y: auto;
+}
+
+.ks-sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Spacing between links */
+}
+
+/* 4. Navigation Links - The "Pill" Look */
+.ks-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 12px; /* Modern rounded corners */
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative; /* For badge positioning */
+}
+
+/* Hover State */
+.ks-nav-link:hover {
+  background-color: var(--hover-bg);
+  color: var(--sidebar-text-hover);
+  transform: translateX(2px); /* Subtle movement */
+}
+
+/* Active State - Minimal Highlight */
+.ks-nav-link.active {
+  background-color: var(--active-bg);
+  color: var(--brand-color);
+  font-weight: 600;
+}
+
+/* Icons */
+.ks-nav-link svg {
+  width: 20px;
+  height: 20px;
+  opacity: 0.8;
+  transition: stroke 0.2s;
+}
+
+.ks-nav-link.active svg {
+  opacity: 1;
+  stroke: var(--brand-color); /* Icon matches brand color when active */
+}
+
+/* 5. Notification Badge - Floating & Clean */
+.ks-notification-badge {
+  background-color: #ef4444; /* Alert Red */
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px; /* Capsule shape if number is large */
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Positioning Logic */
+  position: absolute;
+  right: 12px; 
+  top: 50%;
+  transform: translateY(-50%);
+  
+  /* Glow effect */
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
+}
+
+/* 6. Footer - Separated */
+.ks-sidebar-footer {
+  padding: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ks-logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--sidebar-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ks-logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}

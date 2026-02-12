@@ -1,0 +1,275 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Mulish:wght@300;400;600&display=swap');
+
+:root {
+  --bg-color: #FDFBF7; /* Cream/Alabaster */
+  --text-primary: #2D2D2D;
+  --text-secondary: #5A5A5A;
+  --gold-primary: #C5A059;
+  --gold-light: #F2EFE8;
+  --line-color: #E0E0E0;
+  --shadow-soft: 0 10px 30px rgba(197, 160, 89, 0.15);
+}
+
+.process-section {
+  background-color: var(--bg-color);
+  padding: 80px 20px;
+  font-family: 'Mulish', sans-serif;
+  overflow: hidden; /* Prevents animation scrollbars */
+}
+
+.process-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- HEADER --- */
+.process-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.process-title {
+  font-family: 'Merriweather', serif;
+  font-size: 1.9rem;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.gold-text {
+  color: var(--gold-primary);
+  font-style: italic;
+}
+
+.title-separator {
+  width: 80px;
+  height: 3px;
+  background-color: var(--gold-primary);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* --- STEPS WRAPPER --- */
+.steps-wrapper {
+  position: relative;
+  margin-bottom: 60px;
+}
+
+/* The Connecting Line (Desktop) */
+.process-line-container {
+  position: absolute;
+  top: 40px; /* Aligns with center of 80px icons */
+  left: 10%; /* Start a bit inside */
+  width: 80%; /* Don't span full width */
+  height: 2px;
+  z-index: 0;
+}
+
+.process-line {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--line-color) 20%, 
+    var(--line-color) 80%, 
+    transparent 100%
+  );
+}
+
+/* The Grid */
+.steps-grid {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1; /* Sits above the line */
+  gap: 20px;
+}
+
+/* --- INDIVIDUAL STEP CARD --- */
+.step-card {
+  flex: 1;
+  text-align: center;
+  padding: 0 15px;
+  transition: transform 0.3s ease;
+  opacity: 0; /* For animation */
+}
+
+.step-card:hover {
+  transform: translateY(-10px);
+}
+
+/* Icon Styling */
+.icon-wrapper {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 25px auto;
+}
+
+.icon-circle {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border: 2px solid var(--gold-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-primary);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.step-card:hover .icon-circle {
+  background-color: var(--gold-primary);
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.icon-circle svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Number Badge */
+.step-number {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--text-primary);
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+/* Text Content */
+.step-title {
+  font-family: 'Merriweather', serif;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.step-desc {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+/* --- BOTTOM TEXT --- */
+.process-bottom-text {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0; /* For animation */
+}
+
+.process-bottom-text p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(197, 160, 89, 0.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+/* --- ANIMATIONS --- */
+.fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* Tablet & Mobile */
+@media (max-width: 900px) {
+  .steps-grid {
+    flex-direction: column;
+    align-items: flex-start; /* Left align for timeline look */
+    padding-left: 20px;
+  }
+
+  /* Hide Horizontal Line */
+  .process-line-container {
+    display: none; 
+  }
+
+  /* Create Vertical Line */
+  .steps-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 59px; /* Align with center of icon (20px padding + 39px center) */
+    width: 2px;
+    background: linear-gradient(180deg, var(--gold-primary) 0%, var(--line-color) 100%);
+    z-index: 0;
+  }
+
+  .step-card {
+    display: flex;
+    text-align: left;
+    margin-bottom: 40px;
+    align-items: flex-start;
+    width: 100%;
+    position: relative;
+    padding: 0;
+  }
+  
+  .step-card:hover {
+    transform: translateX(5px); /* Slide right instead of up */
+  }
+
+  .icon-wrapper {
+    margin: 0 25px 0 0; /* Margin right instead of bottom */
+    flex-shrink: 0; /* Prevent icon shrinking */
+  }
+
+  .step-content {
+    padding-top: 10px; /* Align text with icon top */
+  }
+
+  .step-desc {
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .process-bottom-text p {
+    font-size: 1rem;
+    padding: 20px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .process-title {
+    font-size: 1.3rem;
+  }
+  
+  /* Adjust vertical line for smaller padding if needed */
+  .steps-wrapper::before {
+    left: 40px; /* Center of 80px icon is 40px if padding removed */
+  }
+  
+  .steps-grid {
+    padding-left: 0;
+  }
+  
+  /* Adjust Icon size for very small screens if desired, 
+     but 80px is usually fine for touch targets */
+}

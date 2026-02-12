@@ -1,0 +1,191 @@
+/* --- FONTS & THEME --- */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Mulish:wght@300;400;600&display=swap');
+
+:root {
+  --bg-color: #FDFBF7;       /* Cream Background */
+  --text-primary: #1A1A1A;   /* Charcoal */
+  --text-secondary: #5A5A5A; /* Muted Grey */
+  --accent-gold: #C5A059;    /* Brand Gold */
+  --input-border: #E0E0E0;
+  --focus-color: #1A1A1A;    /* Focus state color */
+  --error-color: #D32F2F;
+  --success-color: #2E7D32;
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: 'Mulish', sans-serif;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* --- MAIN CONTAINER --- */
+.admin-login-container {
+  min-height: 85vh; /* Occupy mostly full screen minus navbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* --- LOGIN WRAPPER (NO CARD STYLE) --- */
+.login-card {
+  width: 100%;
+  max-width: 420px; /* Minimal width for focus */
+  background: transparent; /* No card background */
+  box-shadow: none;        /* No shadow */
+  border: none;            /* No border */
+  padding: 0;              /* Reset padding */
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* --- HEADER TYPOGRAPHY --- */
+.login-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.login-header h2 {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+.login-header p {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+  font-weight: 700;
+  margin: 0;
+}
+
+/* --- FORM ELEMENTS --- */
+.form-group {
+  margin-bottom: 35px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* Minimalist Input (Border Bottom Only) */
+.form-control {
+  width: 100%;
+  padding: 12px 0;
+  font-family: 'Merriweather', serif; /* Serif font for input feels premium */
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--input-border);
+  border-radius: 0;
+  transition: border-color 0.3s ease;
+  outline: none;
+}
+
+.form-control:focus {
+  border-bottom-color: var(--accent-gold);
+}
+
+.form-control::placeholder {
+  color: #CCC;
+  font-family: 'Mulish', sans-serif;
+  font-size: 1rem;
+}
+
+/* --- BUTTONS --- */
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--text-primary); /* Dark Charcoal Button */
+  color: #fff;
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px; /* Minimal radius */
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-gold); /* Turns Gold on Hover */
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- ALERTS --- */
+.alert {
+  padding: 12px 0;
+  margin-bottom: 30px;
+  font-size: 0.9rem;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.alert-error {
+  color: var(--error-color);
+  background: rgba(211, 47, 47, 0.05);
+  border: 1px solid rgba(211, 47, 47, 0.1);
+}
+
+.alert-success {
+  color: var(--success-color);
+  background: rgba(46, 125, 50, 0.05);
+  border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+/* --- UTILITIES --- */
+.back-link {
+  text-align: center;
+  margin-top: 25px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.back-link:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 480px) {
+  .admin-login-container {
+    padding: 20px 15px;
+    align-items: flex-start; /* Move up slightly on mobile */
+    padding-top: 60px;
+  }
+
+  .login-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .form-control {
+    font-size: 1rem;
+  }
+}

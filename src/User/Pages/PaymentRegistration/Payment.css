@@ -1,0 +1,398 @@
+/* --- LAYOUT & FONTS --- */
+.checkout-wrapper {
+  min-height: calc(100vh - 64px); /* Full height minus navbar */
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #1a1f36;
+}
+
+.checkout-grid {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  min-height: 500px;
+  margin: 40px 20px;
+  border: 1px solid #e6e6e6; /* Subtle border instead of shadow */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* --- LEFT COLUMN: PRODUCT SUMMARY --- */
+.product-summary {
+  flex: 1;
+  background-color: #f7f9fc; /* Very light grey/blue corporate background */
+  padding: 40px;
+  border-right: 1px solid #e6e6e6;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-label {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: #8792a2;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.summary-header h2 {
+  font-size: 22px;
+  margin: 0 0 20px 0;
+  color: #1a1f36;
+}
+
+.price-tag {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 40px;
+}
+
+.price-tag .currency {
+  font-size: 20px;
+  font-weight: 500;
+  color: #3c4257;
+  margin-right: 4px;
+}
+
+.price-tag .amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a1f36;
+  letter-spacing: -0.5px;
+}
+
+.price-tag .period {
+  font-size: 14px;
+  color: #697386;
+  margin-left: 8px;
+}
+
+/* Feature List */
+.features-list {
+  flex-grow: 1;
+}
+
+.feature-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.check-icon {
+  background-color: #dcfce7;
+  color: #166534;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.feature-text strong {
+  display: block;
+  font-size: 14px;
+  color: #3c4257;
+  margin-bottom: 4px;
+}
+
+.feature-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #697386;
+  line-height: 1.5;
+}
+
+.secure-badge {
+  font-size: 12px;
+  color: #8792a2;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e6e6e6;
+}
+
+/* --- RIGHT COLUMN: ACTION AREA --- */
+.payment-action-area {
+  flex: 1.2;
+  background-color: #ffffff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.action-content {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.action-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  color: #1a1f36;
+}
+
+.step-desc {
+  color: #697386;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* Payment Method Box */
+.method-box {
+  border: 2px solid #635bff; /* Stripe Purple */
+  background-color: #f8faff;
+  padding: 15px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.radio-circle {
+  width: 10px;
+  height: 10px;
+  background-color: #635bff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.1);
+}
+
+.method-name {
+  flex-grow: 1;
+  margin-left: 15px;
+  font-weight: 500;
+  font-size: 15px;
+  color: #3c4257;
+}
+
+.upi-icon {
+  height: 20px;
+  opacity: 0.8;
+}
+
+/* Stripe Style Button */
+.stripe-btn {
+  background-color: #635bff; /* The signature Stripe Blurple */
+  color: #ffffff;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 5px rgba(60, 66, 87, 0.08); /* Minimal shadow */
+}
+
+.stripe-btn:hover {
+  background-color: #544dc9;
+}
+
+.stripe-btn:disabled {
+  background-color: #a7a9bc;
+  cursor: not-allowed;
+}
+
+/* Manual Link */
+.manual-link-area {
+  margin-top: 30px;
+  text-align: center;
+  border-top: 1px solid #f0f2f5;
+  padding-top: 20px;
+}
+
+.manual-link-area p {
+  font-size: 13px;
+  color: #697386;
+  margin-bottom: 5px;
+}
+
+.text-link {
+  background: none;
+  border: none;
+  color: #635bff;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+/* --- FORM INPUTS (Stripe Style) --- */
+.corp-input-group {
+  margin-bottom: 20px;
+}
+
+.corp-input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3c4257;
+  margin-bottom: 6px;
+}
+
+.corp-input-group input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #e0e6eb;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #3c4257;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.corp-input-group input[type="text"]:focus {
+  border-color: #635bff;
+  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+  outline: none;
+}
+
+/* File Drop Area */
+.file-drop-area {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  border: 1px dashed #c0c9d8;
+  border-radius: 4px;
+  text-align: center;
+  background-color: #fcfcfd;
+  transition: 0.2s;
+}
+
+.file-drop-area:hover {
+  background-color: #f7f9fc;
+  border-color: #635bff;
+}
+
+.file-drop-area input {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-msg {
+  font-size: 14px;
+  color: #697386;
+}
+
+.error-msg {
+  color: #cd3d64;
+  background-color: #fff0f3;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid #e0e6eb;
+  color: #3c4257;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.back-btn:hover {
+  background-color: #f7f9fc;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .checkout-grid {
+    flex-direction: column;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+  
+  .product-summary {
+    border-right: none;
+    border-bottom: 1px solid #e6e6e6;
+    padding: 30px 20px;
+  }
+  
+  .payment-action-area {
+    padding: 30px 20px;
+  }
+}
+
+
+/* QR Code Styling for PC */
+.qr-container {
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: #f8faff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px dashed #635bff;
+}
+
+.qr-box {
+  background: white;
+  padding: 10px;
+  display: inline-block;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 10px;
+}
+
+.qr-text {
+  font-size: 13px;
+  color: #697386;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.manual-upi {
+  font-size: 14px;
+  color: #3c4257;
+  background-color: #ffffff;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e0e6eb;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 15px 0;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e0e6eb;
+}
+.divider span {
+  padding: 0 10px;
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+}

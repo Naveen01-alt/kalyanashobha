@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Mulish:wght@300;400;600&display=swap');
+
+:root {
+  --footer-bg: #1A1A1A;
+  --footer-text: #E0E0E0;
+  --footer-gold: #C5A059;
+  --footer-heading: #FFFFFF;
+}
+
+.ks-footer-section {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  font-family: 'Mulish', sans-serif;
+  position: relative;
+  padding-top: 60px;
+}
+
+.ks-footer-gold-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--footer-gold), #F2EFE8, var(--footer-gold));
+}
+
+.ks-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px;
+}
+
+/* --- COLUMNS --- */
+.ks-footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Default to Left for Desktop too */
+  text-align: left;
+}
+
+/* Brand Column */
+.ks-footer-logo {
+  font-family: 'Merriweather', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--footer-gold);
+  margin-bottom: 20px;
+}
+
+.ks-footer-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #B0B0B0;
+  max-width: 300px;
+  margin: 0; /* Reset margins */
+}
+
+/* Headings */
+.ks-footer-heading {
+  font-family: 'Merriweather', serif;
+  font-size: 1.1rem;
+  color: var(--footer-heading);
+  margin-bottom: 25px;
+  position: relative;
+  padding-bottom: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+.ks-footer-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0; /* Anchors line strictly to left */
+  width: 40px;
+  height: 2px;
+  background-color: var(--footer-gold);
+}
+
+/* Links List */
+.ks-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.ks-footer-links li {
+  margin-bottom: 12px;
+}
+
+.ks-footer-links a {
+  text-decoration: none;
+  color: #B0B0B0;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+  font-size: 0.95rem;
+  display: block;
+}
+
+.ks-footer-links a:hover {
+  color: var(--footer-gold);
+  padding-left: 5px;
+}
+
+/* Contact Items */
+.ks-contact-item {
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  color: #B0B0B0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Social Icons */
+.ks-social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: flex-start; /* Force Left Alignment */
+}
+
+.ks-social-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--footer-text);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.ks-social-btn:hover {
+  background-color: var(--footer-gold);
+  border-color: var(--footer-gold);
+  color: #1A1A1A;
+  transform: translateY(-3px);
+}
+
+/* --- BOTTOM COPYRIGHT --- */
+.ks-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  padding: 25px 20px;
+  background-color: #151515;
+}
+
+.ks-footer-bottom p {
+  font-size: 0.85rem;
+  color: #777;
+  margin: 0;
+}
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media (max-width: 992px) {
+  .ks-footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .ks-footer-container {
+    grid-template-columns: 1fr; /* Stack vertically */
+    padding-bottom: 40px;
+  }
+
+  .ks-footer-col {
+    align-items: flex-start !important; /* Force Left Align */
+    text-align: left !important;
+    width: 100%;
+  }
+  
+  /* Ensure headings and their underlines stay left */
+  .ks-footer-heading {
+    text-align: left !important;
+  }
+  
+  .ks-footer-heading::after {
+    left: 0 !important;
+    right: auto !important;
+    margin: 0 !important;
+  }
+  
+  /* Logo left align */
+  .ks-footer-logo {
+    text-align: left !important;
+    width: 100%;
+  }
+
+  /* Social Icons left align */
+  .ks-social-icons {
+    justify-content: flex-start !important;
+  }
+}

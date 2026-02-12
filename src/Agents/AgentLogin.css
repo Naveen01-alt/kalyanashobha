@@ -1,0 +1,255 @@
+/* --- FONTS & THEME VARIABLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;600&display=swap');
+
+:root {
+  --al-bg-color: #FDFBF7;           
+  --al-text-primary: #111111;       
+  --al-text-secondary: #666666;     
+  --al-gold: #C5A059;               
+  --al-border-light: #E0E0E0;       
+  
+  --al-error-bg: #FEF2F2;
+  --al-error-text: #DC2626;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}
+
+/* --- MAIN LAYOUT --- */
+.al-layout-wrapper {
+  min-height: calc(100vh - 80px); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--al-bg-color);
+  font-family: var(--font-sans);
+  padding: 40px 20px;
+  margin: 0;
+}
+
+.al-login-container {
+  width: 100%;
+  max-width: 400px; 
+  background: transparent; 
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+
+/* --- HEADER TYPOGRAPHY --- */
+.al-auth-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.al-auth-header h2 {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  color: var(--al-text-primary);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.al-auth-header p {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--al-gold);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* --- FORM INPUTS --- */
+.al-input-group {
+  margin-bottom: 35px;
+  display: flex;
+  flex-direction: column;
+}
+
+.al-input-group label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--al-text-secondary);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.al-input-group input {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--al-border-light);
+  background: transparent;
+  font-family: var(--font-serif); 
+  font-size: 1.2rem;
+  color: var(--al-text-primary);
+  outline: none;
+  transition: border-color 0.3s ease;
+  border-radius: 0; 
+}
+
+.al-input-group input:focus {
+  border-bottom-color: var(--al-gold);
+}
+
+/* --- OTP SECTION --- */
+.al-otp-container {
+  text-align: center;
+}
+
+.al-otp-instruction {
+  color: var(--al-text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+.al-otp-inputs {
+  display: flex;
+  justify-content: center; /* Center them perfectly */
+  gap: 12px; /* Strict gap */
+  margin-bottom: 25px; /* Reduced to make room for resend text */
+}
+
+/* Strictly locked input sizes so they don't squish */
+.al-otp-inputs input {
+  width: 45px;
+  height: 55px;
+  box-sizing: border-box;
+  padding: 0; 
+  margin: 0;
+  flex-shrink: 0; /* Forces boxes to never squish */
+  border: none;
+  border-bottom: 2px solid var(--al-border-light);
+  background: transparent;
+  text-align: center;
+  font-family: var(--font-serif); 
+  font-size: 2rem;
+  color: var(--al-text-primary);
+  outline: none;
+  transition: border-color 0.3s ease;
+  border-radius: 0;
+}
+
+.al-otp-inputs input:focus {
+  border-bottom-color: var(--al-gold);
+}
+
+/* --- RESEND OTP TEXT --- */
+.al-resend-container {
+  margin-bottom: 35px;
+  font-size: 0.85rem;
+  color: var(--al-text-secondary);
+}
+
+.al-resend-container p {
+  margin: 0;
+}
+
+.al-resend-link {
+  color: var(--al-gold);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.al-resend-link:hover {
+  color: var(--al-text-primary);
+}
+
+/* --- PRIMARY BUTTON --- */
+.al-btn-primary {
+  background-color: var(--al-text-primary); 
+  color: #FFFFFF;
+  border: none;
+  padding: 16px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px; 
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  min-height: 54px; /* Prevents button height shift when spinner shows */
+}
+
+.al-full-width {
+  width: 100%;
+}
+
+.al-btn-primary:hover:not(:disabled) {
+  background-color: var(--al-gold); 
+  transform: translateY(-2px);
+}
+
+.al-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- ERRORS & LOADING --- */
+.al-auth-error {
+  background-color: var(--al-error-bg);
+  color: var(--al-error-text);
+  padding: 14px;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 25px;
+  border-left: 3px solid var(--al-error-text);
+  font-weight: 500;
+}
+
+.al-spinner-sm {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: al-spin 1s linear infinite;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes al-spin { 
+  to { transform: rotate(360deg); } 
+}
+
+.al-fade-in { 
+  animation: al-fadeIn 0.6s ease-out; 
+}
+
+@keyframes al-fadeIn { 
+  from { opacity: 0; transform: translateY(15px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 480px) {
+  .al-layout-wrapper {
+    align-items: flex-start; 
+    padding-top: 60px;
+  }
+
+  .al-auth-header h2 {
+    font-size: 2rem;
+  }
+
+  .al-otp-inputs {
+    gap: 8px; /* Slightly smaller gap for phones */
+  }
+
+  .al-otp-inputs input {
+    width: 40px;
+    height: 50px;
+    font-size: 1.6rem;
+  }
+}

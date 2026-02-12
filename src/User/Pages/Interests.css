@@ -1,0 +1,584 @@
+/* --- FONTS & VARIABLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Mulish:wght@300;400;600&display=swap');
+
+:root {
+  --bg-color: #FDFBF7;       /* Cream Background */
+  --card-bg: #FFFFFF;        /* White Cards */
+  --text-primary: #1A1A1A;   /* Charcoal */
+  --text-secondary: #5A5A5A; /* Grey text */
+  --accent-gold: #C5A059;    /* Brand Gold */
+  --accent-gold-hover: #B08D45;
+  --border-light: #E0E0E0;
+  --success-color: #2E7D32;
+  --danger-color: #D32F2F;
+  --shadow-soft: 0 4px 20px rgba(0,0,0,0.03);
+  --shadow-hover: 0 8px 30px rgba(0,0,0,0.06);
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: 'Mulish', sans-serif;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* --- MAIN CONTAINER --- */
+.interests-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px 80px;
+  min-height: 80vh;
+}
+
+/* --- HEADER & TABS --- */
+.interests-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.interests-header h2 {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+}
+
+.tabs-group {
+  display: inline-flex;
+  background: var(--card-bg);
+  padding: 5px;
+  border-radius: 50px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+  border: 1px solid var(--border-light);
+}
+
+.tab-link {
+  background: transparent;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 40px;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.tab-link.active {
+  background-color: var(--accent-gold);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.3);
+}
+
+.tab-link:hover:not(.active) {
+  color: var(--accent-gold);
+}
+
+/* --- GRID LAYOUT --- */
+.interests-content {
+  margin-top: 20px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* --- CARD STYLING --- */
+.interest-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 25px;
+  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.interest-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(197, 160, 89, 0.2);
+}
+
+/* --- CARD HEADER (Avatar + Info) --- */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Centered header for Accepted cards (No Photo) */
+.card-header-row.centered {
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-light);
+}
+
+.card-info h4 {
+  font-family: 'Merriweather', serif;
+  font-size: 1.1rem;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.card-info p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.card-info .loc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* --- CONTACT BOX (For Accepted Tab) --- */
+.contact-box {
+  background-color: #FAFAFA;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.contact-box p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.contact-box strong {
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.divider-small {
+  height: 1px;
+  background: var(--border-light);
+  margin: 10px 40px; /* Indented lines */
+}
+
+/* --- ACTION BUTTONS --- */
+.card-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto; /* Push to bottom */
+  padding-top: 20px;
+  border-top: 1px solid #f7f7f7;
+}
+
+.btn-accept, .btn-decline {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'Mulish', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-accept {
+  background-color: var(--accent-gold);
+  color: white;
+}
+
+.btn-accept:hover {
+  background-color: var(--accent-gold-hover);
+  box-shadow: 0 4px 10px rgba(197, 160, 89, 0.25);
+}
+
+.btn-decline {
+  background-color: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+}
+
+.btn-decline:hover {
+  background-color: #f5f5f5;
+  color: var(--danger-color);
+  border-color: #f5f5f5;
+}
+
+/* --- FOOTER & STATUS --- */
+.card-footer {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #f9f9f9;
+  font-size: 0.75rem;
+  color: #999;
+  text-align: right;
+}
+
+/* Status Badges */
+.status-pill {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+  text-align: center;
+}
+
+.status-text {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Status Colors */
+.status-pill.Pending, .status-text.Pending { color: #F59E0B; background-color: #FFFBEB; }
+.status-pill.Accepted, .status-text.Accepted, .badge-success { color: #10B981; background-color: #ECFDF5; }
+.status-pill.Declined, .status-text.Declined { color: #EF4444; background-color: #FEF2F2; }
+
+/* Specific adjustment for Badge Success in Accepted Card */
+.badge-success {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  display: inline-block;
+}
+
+/* --- LOADING & EMPTY STATES --- */
+.loading-spinner {
+  text-align: center;
+  font-family: 'Merriweather', serif;
+  color: var(--accent-gold);
+  margin-top: 60px;
+  font-size: 1.1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-secondary);
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px dashed var(--border-light);
+  font-size: 1rem;
+}
+
+/* --- RESPONSIVE MEDIA QUERIES --- */
+@media (max-width: 768px) {
+  .interests-container {
+    padding: 0 15px 60px;
+    margin-top: 20px;
+  }
+
+  .interests-header h2 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
+  .tabs-group {
+    display: flex;
+    width: 100%;
+    border-radius: 12px; /* Less rounded on mobile for stacking if needed */
+    padding: 4px;
+  }
+
+  .tab-link {
+    flex: 1;
+    padding: 10px 0;
+    font-size: 0.85rem;
+    min-width: auto;
+    border-radius: 8px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr; /* Single column stack */
+    gap: 20px;
+  }
+
+  .interest-card {
+    padding: 20px;
+  }
+}
+
+
+/* --- PREMIUM CARD STYLING --- */
+
+/* 1. The Card Container */
+.accepted-card {
+  border: 1px solid #f0f0f0;
+  background: #ffffff;
+  /* A subtle top border in your brand gold makes it look expensive */
+  border-top: 4px solid var(--accent-gold); 
+  padding: 0; /* Reset padding for internal layout */
+  overflow: hidden;
+  position: relative;
+}
+
+/* 2. The Header Section */
+.premium-header {
+  padding: 25px 25px 15px 25px;
+  text-align: center;
+  background: linear-gradient(to bottom, #fff, #fafafa);
+}
+
+.premium-header h4 {
+  font-family: 'Merriweather', serif;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin: 10px 0 15px;
+}
+
+/* A sophisticated small badge instead of the big green button */
+.status-badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--success-color);
+  font-weight: 700;
+  background: rgba(46, 125, 50, 0.08);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.status-badge-premium .dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--success-color);
+  border-radius: 50%;
+}
+
+.gold-divider {
+  width: 40px;
+  height: 2px;
+  background-color: var(--accent-gold);
+  margin: 0 auto;
+  opacity: 0.6;
+}
+
+/* 3. The Data Table (Replacing the beige box) */
+.premium-details {
+  padding: 10px 25px 25px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  font-weight: 600;
+  font-family: 'Mulish', sans-serif;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Highlight the mobile number slightly */
+.detail-value.highlight {
+  color: var(--text-primary);
+  font-family: 'Merriweather', serif; /* Serif numbers look more elegant */
+}
+
+.detail-value.email-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Hover Effect specifically for this card */
+.accepted-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(197, 160, 89, 0.15); /* Gold tinted shadow */
+  border-color: var(--accent-gold);
+}
+
+/* --- PREMIUM CARD STYLING (Applies to all tabs) --- */
+
+/* 1. The Card Container */
+.accepted-card {
+  border: 1px solid #f0f0f0;
+  background: #ffffff;
+  /* A subtle top border in your brand gold makes it look expensive */
+  border-top: 4px solid var(--accent-gold); 
+  padding: 0; 
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.accepted-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(197, 160, 89, 0.15);
+  border-color: var(--accent-gold);
+}
+
+/* 2. The Header Section */
+.premium-header {
+  padding: 30px 25px 15px 25px;
+  text-align: center;
+  background: linear-gradient(to bottom, #fff, #fafafa);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* New Avatar Style for Premium Card */
+.premium-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 10px;
+}
+
+.premium-header h4 {
+  font-family: 'Merriweather', serif;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin: 5px 0 5px;
+}
+
+.premium-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.premium-subtitle .loc {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Badge Style */
+.status-badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--success-color);
+  font-weight: 700;
+  background: rgba(46, 125, 50, 0.08);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.mt-2 { margin-top: 8px; }
+
+.status-badge-premium .dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--success-color);
+  border-radius: 50%;
+}
+
+.gold-divider {
+  width: 40px;
+  height: 2px;
+  background-color: var(--accent-gold);
+  margin: 10px auto 0;
+  opacity: 0.6;
+}
+
+/* 3. The Details List */
+.premium-details {
+  padding: 10px 25px 25px;
+}
+
+.pb-0 { padding-bottom: 0; }
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  font-weight: 600;
+  font-family: 'Mulish', sans-serif;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+}
+
+.detail-value.highlight {
+  color: var(--text-primary);
+  font-family: 'Merriweather', serif;
+}
+
+.detail-value.email-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* 4. Action Buttons (For Received Tab) */
+.card-actions-premium {
+  padding: 20px 25px;
+  display: flex;
+  gap: 10px;
+  background-color: #fafafa;
+  border-top: 1px solid #eee;
+}
+
+/* Reuse existing button styles, just ensure flex works */
+.btn-accept, .btn-decline {
+  flex: 1;
+}
