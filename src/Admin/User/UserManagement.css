@@ -416,13 +416,11 @@ body {
 
 /* --- Card Styles for Premium --- */
 .user-card.is-premium {
-  border: 1px solid #fcd34d; /* Light gold border */
-  background: linear-gradient(to bottom, #fffbeb, #ffffff); /* Very subtle gold tint */
+ 
 }
 
 .user-card.is-premium .uc-avatar {
-  border: 2px solid #f59e0b;
-}
+  }
 
 @keyframes pulse-green {
   0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
