@@ -294,7 +294,7 @@ const UserBlock = ({ user, isProcessing, onView, onBlock, onDelete }) => {
            {/* PAID VS FREE INDICATOR */}
            {user.isPaidMember ? (
              <span className="badge-paid">
-               <Crown size={10} /> PREMIUM
+               <Crown size={10} /> 
              </span>
            ) : (
              <span className="badge-free">FREE</span>
