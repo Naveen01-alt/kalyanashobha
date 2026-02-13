@@ -17,7 +17,7 @@ const PaymentRegistration = () => {
   const [screenshot, setScreenshot] = useState(null);
 
   // YOUR UPI STRING
-  const upiLink = "upi://pay?pa=8897714968@axl&pn=Kalyana%20Shobha&am=1&cu=INR"; 
+  const upiLink = "upi://pay?pa=8897714968@axl&pn=Kalyana%20Shobha&am=1000&cu=INR"; 
 
   // DETECT DEVICE ON MOUNT
   useEffect(() => {
