@@ -5,7 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { 
   Search, Filter, Trash2, Ban, CheckCircle, 
   User, X, ChevronLeft, ChevronRight,
-  Briefcase, MapPin, Image, Shield
+  Briefcase, MapPin, Image, Shield, 
+  Crown, Sparkles // <--- Added Icons
 } from 'lucide-react';
 import './UserManagement.css'; 
 
@@ -36,13 +37,14 @@ const AdminUserManagement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
+      // Ensure backend sorts by createdAt: -1 so new users appear top
       const response = await axios.get(`${API_BASE_URL}/admin/users/advanced`, {
         headers: { Authorization: token },
         params: {
           search: searchTerm,
           referralType: referralFilter === 'all' ? '' : referralFilter,
           page: page,
-          limit: 6 // --- CHANGED TO 6 USERS PER PAGE ---
+          limit: 6 
         }
       });
 
@@ -104,19 +106,14 @@ const AdminUserManagement = () => {
 
   const handleDelete = async (userId) => {
     if(!window.confirm("Permanently delete this user? This cannot be undone.")) return;
-    
     setProcessingId(userId);
     const toastId = toast.loading("Deleting user...");
-
     try {
       const token = localStorage.getItem('adminToken');
       await axios.delete(`${API_BASE_URL}/admin/users/${userId}`, { 
         headers: { Authorization: token } 
       });
-      
       toast.update(toastId, { render: "User deleted successfully", type: "success", isLoading: false, autoClose: 3000 });
-      
-      // Refresh list
       showAdvanced ? executeAdvancedSearch() : fetchUsers();
     } catch (error) { 
       toast.update(toastId, { render: "Delete failed", type: "error", isLoading: false, autoClose: 3000 });
@@ -128,24 +125,18 @@ const AdminUserManagement = () => {
   const handleBlockToggle = async (userId, isActive) => {
     const action = isActive ? 'BLOCK' : 'UNBLOCK';
     if(!window.confirm(`Are you sure you want to ${action} this user?`)) return;
-
     setProcessingId(userId);
     const toastId = toast.loading(`Processing ${action.toLowerCase()}...`);
-
     try {
       const token = localStorage.getItem('adminToken');
-      const shouldRestrict = isActive; 
-
       const response = await axios.post(`${API_BASE_URL}/admin/users/restrict`, 
-        { userId, restrict: shouldRestrict },
+        { userId, restrict: isActive },
         { headers: { Authorization: token } }
       );
-
       if (response.data.success) {
          toast.update(toastId, { render: `User ${action.toLowerCase()}ed successfully`, type: "success", isLoading: false, autoClose: 3000 });
          showAdvanced ? executeAdvancedSearch() : fetchUsers();
       }
-
     } catch (error) {
       toast.update(toastId, { render: "Action failed", type: "error", isLoading: false, autoClose: 3000 });
     } finally {
@@ -156,12 +147,11 @@ const AdminUserManagement = () => {
   return (
     <>
       <ToastContainer position="top-right" theme="colored" />
-      
       <div className="um-layout">
         <header className="um-header">
           <div className="um-header-content">
             <h1 className="um-title">User Registry</h1>
-            <p className="um-subtitle">Comprehensive database of registered profiles.</p>
+            <p className="um-subtitle">Manage free & premium profiles.</p>
           </div>
           <button 
             onClick={() => setShowAdvanced(!showAdvanced)}
@@ -174,6 +164,7 @@ const AdminUserManagement = () => {
         <div className="um-controls">
           {showAdvanced ? (
             <form onSubmit={executeAdvancedSearch} className="um-adv-form">
+              {/* ... (Existing Advanced Filters kept same) ... */}
               <div className="um-form-grid">
                 <input name="memberId" value={advFilters.memberId} onChange={handleAdvChange} placeholder="Member ID" className="um-input" />
                 <select name="gender" value={advFilters.gender} onChange={handleAdvChange} className="um-input">
@@ -193,14 +184,11 @@ const AdminUserManagement = () => {
                   <span className="um-divider">-</span>
                   <input type="number" name="maxAge" placeholder="Max Age" value={advFilters.maxAge} onChange={handleAdvChange} className="um-input" />
                 </div>
-                {/* Cultural */}
                 <input name="religion" value={advFilters.religion} onChange={handleAdvChange} placeholder="Religion" className="um-input" />
                 <input name="caste" value={advFilters.caste} onChange={handleAdvChange} placeholder="Caste" className="um-input" />
                 <input name="subCommunity" value={advFilters.subCommunity} onChange={handleAdvChange} placeholder="Sub Community" className="um-input" />
-                {/* Professional */}
                 <input name="education" value={advFilters.education} onChange={handleAdvChange} placeholder="Education" className="um-input" />
                 <input name="occupation" value={advFilters.occupation} onChange={handleAdvChange} placeholder="Occupation" className="um-input" />
-                {/* Location */}
                 <input name="city" value={advFilters.city} onChange={handleAdvChange} placeholder="City" className="um-input" />
                 <input name="state" value={advFilters.state} onChange={handleAdvChange} placeholder="State" className="um-input" />
                 <input name="country" value={advFilters.country} onChange={handleAdvChange} placeholder="Country" className="um-input" />
@@ -270,23 +258,52 @@ const AdminUserManagement = () => {
   );
 };
 
-// --- COMPONENT: USER BLOCK (Populated Agent Info) ---
+// --- UPDATED COMPONENT: USER BLOCK ---
 const UserBlock = ({ user, isProcessing, onView, onBlock, onDelete }) => {
   const getAge = (dob) => dob ? Math.abs(new Date(Date.now() - new Date(dob).getTime()).getUTCFullYear() - 1970) : "N/A";
   
-  // Logic to determine if Referred
+  // Logic: Is user "New"? (Joined in last 7 days)
+  const isNewUser = () => {
+    if (!user.createdAt) return false;
+    const joinedDate = new Date(user.createdAt);
+    const now = new Date();
+    const differenceInDays = (now - joinedDate) / (1000 * 3600 * 24);
+    return differenceInDays <= 7;
+  };
+
   const hasAgent = user.referredByAgentId && typeof user.referredByAgentId === 'object';
-  
   const agentName = hasAgent ? user.referredByAgentId.name : (user.referredByAgentName || "Unknown");
   const agentCode = hasAgent ? user.referredByAgentId.agentCode : "Manual Ref";
 
   return (
-    <div className={`user-card ${!user.isActive ? 'restricted-user' : ''}`}>
+    // Add 'is-premium' class if paid member for Gold styling
+    <div className={`user-card ${!user.isActive ? 'restricted-user' : ''} ${user.isPaidMember ? 'is-premium' : ''}`}>
+      
+      {/* HEADER: ID + STATUS BADGES */}
       <div className="uc-header">
         <span className="uc-id">{user.uniqueId || "N/A"}</span>
-        {!user.isActive && <span className="uc-badge-restricted">RESTRICTED</span>}
+        
+        <div className="uc-badges">
+           {/* NEW USER INDICATOR */}
+           {isNewUser() && (
+             <span className="badge-new">
+               <Sparkles size={10} /> NEW
+             </span>
+           )}
+
+           {/* PAID VS FREE INDICATOR */}
+           {user.isPaidMember ? (
+             <span className="badge-paid">
+               <Crown size={10} /> PREMIUM
+             </span>
+           ) : (
+             <span className="badge-free">FREE</span>
+           )}
+        </div>
       </div>
       
+      {!user.isActive && <div className="uc-badge-restricted-overlay">RESTRICTED ACCOUNT</div>}
+
       <div className="uc-body">
         <div className="uc-avatar-wrap">
           {user.photos?.[0] ? 
@@ -332,7 +349,7 @@ const UserBlock = ({ user, isProcessing, onView, onBlock, onDelete }) => {
   );
 };
 
-// --- COMPONENT: DETAIL MODAL ---
+// --- COMPONENT: DETAIL MODAL (Minor updates for Paid Status) ---
 const UserDetailModal = ({ user, onClose }) => {
   const formatDate = (date) => date ? new Date(date).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'}) : "-";
   
@@ -345,7 +362,10 @@ const UserDetailModal = ({ user, onClose }) => {
       <div className="um-modal-container">
         <div className="um-modal-header">
           <div className="um-modal-title-group">
-            <h2 className="um-modal-name">{user.firstName} {user.lastName}</h2>
+            <h2 className="um-modal-name">
+              {user.firstName} {user.lastName} 
+              {user.isPaidMember && <Crown size={18} fill="#f59e0b" color="#f59e0b" style={{marginLeft: '10px'}}/>}
+            </h2>
             <span className="um-modal-id-badge">{user.uniqueId}</span>
           </div>
           <button onClick={onClose} className="um-close-btn"><X size={24} /></button>
@@ -354,8 +374,11 @@ const UserDetailModal = ({ user, onClose }) => {
         <div className="um-modal-body">
           <div className="um-modal-top-bar">
              <div className="um-top-chips">
+                <span className={`um-chip ${user.isPaidMember ? 'gold-chip' : ''}`}>
+                  {user.isPaidMember ? 'Premium Member' : 'Free Member'}
+                </span>
                 <span className="um-chip">{user.gender}</span>
-                <span className="um-chip">{formatDate(user.dob)}</span>
+                <span className="um-chip">Joined: {formatDate(user.createdAt)}</span>
                 
                 {(hasAgent || user.referralType === 'manual') && (
                   <span className="um-chip agent">
