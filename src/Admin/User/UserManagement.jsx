@@ -151,7 +151,7 @@ const AdminUserManagement = () => {
         <header className="um-header">
           <div className="um-header-content">
             <h1 className="um-title">User Registry</h1>
-            <p className="um-subtitle">Manage free & premium profiles.</p>
+            
           </div>
           <button 
             onClick={() => setShowAdvanced(!showAdvanced)}
