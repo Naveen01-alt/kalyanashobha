@@ -364,3 +364,76 @@ body {
   .um-header { flex-direction: column; align-items: flex-start; gap: 15px; }
   .um-quick-bar { flex-direction: column; align-items: stretch; }
 }
+
+
+/* UserManagement.css */
+
+/* ... existing styles ... */
+
+/* --- Status Badges --- */
+.uc-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge-new {
+  background: #10b981; /* Green */
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  animation: pulse-green 2s infinite;
+}
+
+.badge-paid {
+  background: linear-gradient(135deg, #f59e0b, #d97706); /* Gold */
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.badge-free {
+  background: #e5e7eb;
+  color: #6b7280;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+}
+
+/* --- Card Styles for Premium --- */
+.user-card.is-premium {
+  border: 1px solid #fcd34d; /* Light gold border */
+  background: linear-gradient(to bottom, #fffbeb, #ffffff); /* Very subtle gold tint */
+}
+
+.user-card.is-premium .uc-avatar {
+  border: 2px solid #f59e0b;
+}
+
+@keyframes pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Update Header Layout to fit badges */
+.uc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
