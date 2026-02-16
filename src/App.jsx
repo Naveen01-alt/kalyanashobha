@@ -21,6 +21,7 @@ import AgentDashboard from "./Agents/AgentDashboard.jsx";
 // --- ADMIN IMPORTS ---
 import AdminLogin from "./Admin/Login/AdminLogin.jsx";
 import AdminDashboard from "./Admin/Dashboard/Dashboard.jsx";
+import AdminCertificate from "./Admin/AdminCertificate/AdminCertificates.jsx";
 import AdminLayout from "./Admin/AdminLayout.jsx";
 import UserManagement from "./Admin/User/UserManagement.jsx";
 import RegistrationApprovals from "./Admin/RegistrationApprovals/RegistrationApprovals.jsx";
@@ -42,14 +43,13 @@ const PublicRoute = ({ children }) => {
   return token ? <Navigate to="/dashboard" replace /> : children;
 };
 
-// 3. Protected Route Component (FOR AGENTS) - *** NEW ***
+// 3. Protected Route Component (FOR AGENTS)
 const ProtectedAgentRoute = ({ children }) => {
   const token = localStorage.getItem("agentToken");
-  // If no agent token, send to Agent Login
   return token ? children : <Navigate to="/agent/login" replace />;
 };
 
-// 4. Protected Route Component (FOR ADMIN) - *** RECOMMENDED ***
+// 4. Protected Route Component (FOR ADMIN)
 const ProtectedAdminRoute = ({ children }) => {
   const token = localStorage.getItem("adminToken");
   return token ? children : <Navigate to="/admin/login" replace />;
@@ -58,7 +58,11 @@ const ProtectedAdminRoute = ({ children }) => {
 function App() {
   return (
     <Routes>
-      {/* --- PUBLIC USER ROUTES --- */}
+      {/* --- OPEN ACCESS ROUTES (Accessible by ANYONE) --- */}
+      {/* We moved /vendor here and removed the ProtectedRoute wrapper */}
+      <Route path="/vendor" element={<UserVendor />} />
+
+      {/* --- PUBLIC USER ROUTES (Redirects to Dashboard if already logged in) --- */}
       <Route 
         path="/" 
         element={
@@ -75,18 +79,15 @@ function App() {
       <Route path="/registration" element={<PublicRoute><Registration /></PublicRoute>} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
-      {/* --- PROTECTED USER ROUTES --- */}
+      {/* --- PROTECTED USER ROUTES (Login Required) --- */}
       <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
       <Route path="/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
       <Route path="/interests" element={<ProtectedRoute><Interests /></ProtectedRoute>} />
       <Route path="/myprofile" element={<ProtectedRoute><Myprofile /></ProtectedRoute>} />
-      <Route path="/vendor" element={<ProtectedRoute><UserVendor/></ProtectedRoute>} />
       <Route path="/payment-registration" element={<ProtectedRoute><PayRegistration /></ProtectedRoute>} />
 
       {/* --- AGENT PORTAL ROUTES --- */}
       <Route path="/agent/login" element={<AgentLogin />} />
-      
-      {/* *** FIXED: Wrapped in ProtectedAgentRoute *** */}
       <Route path="/agent/dashboard" element={
         <ProtectedAgentRoute>
           <AgentDashboard />
@@ -96,7 +97,6 @@ function App() {
       {/* --- ADMIN ROUTES --- */}
       <Route path="/admin/login" element={<AdminLogin />} />
       
-      {/* Added Admin Protection for safety */}
       <Route path="/admin" element={<ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>}>
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="users" element={<UserManagement />} />
@@ -104,6 +104,7 @@ function App() {
         <Route path="interest-approvals" element={<InterestApproval />} />
         <Route path="agents" element={<AdminAgentManagement />} /> 
         <Route path="vendors" element={<AdminVendor />} />
+       <Route path="user-certificates" element={<AdminCertificate />} />
       </Route>
     </Routes>
   );
