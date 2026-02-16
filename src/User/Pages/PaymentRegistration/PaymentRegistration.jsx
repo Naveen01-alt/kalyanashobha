@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "../../Components/Navbar.jsx";
 import { useNavigate } from 'react-router-dom';
-import QRCode from "react-qr-code"; // Make sure to npm install react-qr-code
+import QRCode from "react-qr-code"; 
+import toast, { Toaster } from 'react-hot-toast'; // IMPORT HOT TOAST
 import './Payment.css'; 
 
 const PaymentRegistration = () => {
@@ -9,8 +10,8 @@ const PaymentRegistration = () => {
   
   const [step, setStep] = useState(1); 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isMobile, setIsMobile] = useState(false); // To detect device
+  // Removed explicit error state since we are using Toasts now
+  const [isMobile, setIsMobile] = useState(false); 
 
   const [amount, setAmount] = useState('1000'); 
   const [utrNumber, setUtrNumber] = useState('');
@@ -34,7 +35,6 @@ const PaymentRegistration = () => {
 
   const handlePayClick = () => {
     window.location.href = upiLink;
-    // Auto-advance only on mobile, since desktop users stay on screen to scan
     setTimeout(() => { setStep(2); }, 3000);
   };
 
@@ -46,18 +46,25 @@ const PaymentRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    
+    // Validation Toast
     if (!utrNumber || !screenshot) {
-      setError("Please provide both UTR Number and Payment Screenshot.");
+      toast.error("Please provide both UTR Number and Payment Screenshot.");
       return;
     }
+
     setLoading(true);
+    const loadingToast = toast.loading("Verifying payment..."); // Optional: Loading toast
+
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        toast.dismiss(loadingToast);
+        toast.error("Please login to continue.");
         navigate('/login');
         return;
       }
+
       const formData = new FormData();
       formData.append('amount', amount);
       formData.append('utrNumber', utrNumber);
@@ -68,15 +75,23 @@ const PaymentRegistration = () => {
         headers: { 'Authorization': token },
         body: formData
       });
+      
       const data = await response.json();
+      
+      toast.dismiss(loadingToast); // Remove loading toast
+
       if (data.success) {
-        alert("Payment submitted successfully!");
+        // Success Toast
+        toast.success("Payment submitted successfully!");
         navigate('/dashboard'); 
       } else {
-        setError(data.message || "Submission failed.");
+        // Error Toast from Backend
+        toast.error(data.message || "Submission failed.");
       }
     } catch (err) {
-      setError("Server connection failed.");
+      toast.dismiss(loadingToast);
+      // Network Error Toast
+      toast.error("Server connection failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -85,6 +100,9 @@ const PaymentRegistration = () => {
   return (
     <>
       <Navbar />
+      {/* Toast Container */}
+      <Toaster position="top-center" reverseOrder={false} />
+
       <div className="checkout-wrapper">
         <div className="checkout-grid">
           
@@ -139,9 +157,7 @@ const PaymentRegistration = () => {
                   {isMobile ? "Pay securely via any UPI App" : "Scan QR code with your phone"}
                 </p>
                 
-                {/* --- DYNAMIC PAYMENT UI --- */}
                 {isMobile ? (
-                  // MOBILE VIEW: BUTTON
                   <>
                     <div className="method-box selected">
                       <div className="radio-circle"></div>
@@ -153,10 +169,8 @@ const PaymentRegistration = () => {
                     </button>
                   </>
                 ) : (
-                  // PC VIEW: QR CODE
                   <div className="qr-container">
                     <div className="qr-box">
-                       {/* Generates QR from UPI Link */}
                        <QRCode value={upiLink} size={160} />
                     </div>
                     <p className="qr-text">Scan with GPay, PhonePe, or Paytm</p>
@@ -164,7 +178,6 @@ const PaymentRegistration = () => {
                     <p className="manual-upi">UPI ID: <strong>8897714968@axl</strong></p>
                   </div>
                 )}
-                {/* ------------------------- */}
 
                 <div className="manual-link-area">
                   <p>Payment Completed?</p>
@@ -188,7 +201,7 @@ const PaymentRegistration = () => {
                     value={utrNumber} 
                     onChange={(e) => setUtrNumber(e.target.value)}
                     placeholder="e.g. 123456789012"
-                    required
+                    // Removed 'required' attribute to let our toast handle the validation message
                   />
                 </div>
 
@@ -199,7 +212,7 @@ const PaymentRegistration = () => {
                       type="file" 
                       accept="image/*"
                       onChange={handleFileChange}
-                      required
+                      // Removed 'required' attribute here as well for custom toast handling
                     />
                     <span className="file-msg">
                       {screenshot ? screenshot.name : "Click to Upload Image"}
@@ -207,7 +220,7 @@ const PaymentRegistration = () => {
                   </div>
                 </div>
 
-                {error && <div className="error-msg">{error}</div>}
+                {/* Removed the inline error div since we use Toast now */}
 
                 <div className="btn-group">
                   <button type="button" className="back-btn" onClick={() => setStep(1)}>Back</button>
