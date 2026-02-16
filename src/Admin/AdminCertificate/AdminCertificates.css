@@ -1,0 +1,143 @@
+/* AdminCertificates.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --admin-header-bg: #1A1A1A;  /* Deep Black */
+  --admin-primary-red: #D32F2F; /* Matrimony Red */
+  --admin-bg-gray: #F9FAFB;
+  --admin-border: #E5E7EB;
+  --text-dark: #111827;
+  --text-light: #6B7280;
+}
+
+.admin-container {
+  padding: 30px;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--admin-bg-gray);
+  min-height: 100vh;
+}
+
+.admin-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+/* --- TABLE CARD --- */
+.table-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  overflow: hidden; /* Clips corners */
+  border: 1px solid var(--admin-border);
+}
+
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px; /* Ensures table doesn't squish on mobile */
+}
+
+/* --- TABLE HEADER --- */
+.custom-table thead tr {
+  background-color: var(--admin-header-bg);
+  color: white;
+  text-align: left;
+}
+
+.custom-table th {
+  padding: 16px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- TABLE BODY --- */
+.custom-table tbody tr {
+  border-bottom: 1px solid var(--admin-border);
+  transition: background-color 0.2s;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #F3F4F6;
+}
+
+.custom-table td {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--text-dark);
+  vertical-align: middle;
+}
+
+.custom-table td.text-muted {
+  color: var(--text-light);
+}
+
+/* --- BADGES (Status) --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-signed {
+  background-color: #DEF7EC;
+  color: #03543F;
+}
+
+.badge-pending {
+  background-color: #FDE8E8;
+  color: #9B1C1C;
+}
+
+/* --- BUTTONS --- */
+.btn-download {
+  background-color: var(--admin-primary-red);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(211, 47, 47, 0.2);
+}
+
+.btn-download:hover {
+  background-color: #B71C1C;
+  transform: translateY(-1px);
+}
+
+.btn-disabled {
+  background-color: #E5E7EB;
+  color: #9CA3AF;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: not-allowed;
+}
+
+/* --- LOADING STATE --- */
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+  font-size: 14px;
+}
