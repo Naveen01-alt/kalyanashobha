@@ -1,525 +1,528 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from "../../Components/Navbar.jsx";
+import Navbar from "../../Components/Navbar.jsx"; 
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 import './UserDashboard.css';
 
-// --- ICONS ---
+// --- SVG ICONS ---
 const Icons = {
-  MaleAvatar: () => (
-    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="#cbd5e0" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" />
-      <path d="M12.0002 14.5C6.99016 14.5 2.91016 17.86 2.91016 22C2.91016 22.28 3.13016 22.5 3.41016 22.5H20.5902C20.8702 22.5 21.0902 22.28 21.0902 22C21.0902 17.86 17.0102 14.5 12.0002 14.5Z" />
-    </svg>
-  ),
-  FemaleAvatar: () => (
-    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="#cbd5e0" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C9.24 2 7 4.24 7 7C7 9.76 9.24 12 12 12C14.76 12 17 9.76 17 7C17 4.24 14.76 2 12 2Z" />
-      <path d="M12 14.5C7.5 14.5 3.5 17.5 3.5 21.5C3.5 21.78 3.72 22 4 22H20C20.28 22 20.5 21.78 20.5 21.5C20.5 17.5 16.5 14.5 12 14.5Z" />
-    </svg>
-  ),
-  VerifiedBadge: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="#C5A059" xmlns="http://www.w3.org/2000/svg">
-      <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="#C5A059" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M22 4L12 14.01L9 11.01" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  ),
-  UploadIcon: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-      <polyline points="17 8 12 3 7 8"></polyline>
-      <line x1="12" y1="3" x2="12" y2="15"></line>
-    </svg>
-  ),
-  CopyIcon: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-    </svg>
-  ),
-  CheckCircle: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <path d="M22 4L12 14.01l-3-3"></path>
-    </svg>
-  )
+  Female: () => 
+    <svg viewBox="0 0 24 24" fill="none" width="100%" height="100%">
+      {/* Head: Red */}
+      <path 
+        d="M12 14C7.33 14 4 17.33 4 22H20C20 17.33 16.67 14 12 14Z" 
+        fill="#F59E0B" 
+      />
+      {/* Body: Amber/Yellow */}
+            <path 
+        d="M12 2C9.24 2 7 4.24 7 7C7 9.76 9.24 12 12 12C14.76 12 17 9.76 17 7C17 4.24 14.76 2 12 2Z" 
+        fill="#DC2626" 
+      />
+    </svg>,
+  Male: () => <svg viewBox="0 0 24 24" fill="#3B82F6" width="100%" height="100%"><path d="M12 2C9.24 2 7 4.24 7 7C7 9.76 9.24 12 12 12C14.76 12 17 9.76 17 7C17 4.24 14.76 2 12 2ZM12 14C7.33 14 4 17.33 4 22H20C20 17.33 16.67 14 12 14Z"/></svg>,
+  Verify: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+  Upload: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>,
+  Copy: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>,
+  Lock: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>,
+  Search: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>,
+  Filter: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>,
+  ChevronDown: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
 };
+
+// --- DATA OPTIONS FOR DROPDOWNS ---
+const EDUCATION_OPTIONS = ["Any", "B.Tech", "M.Tech", "MBA", "MBBS", "Degree", "MCA", "Ph.D", "Diploma", "Other"];
+const MARITAL_STATUS_OPTIONS = ["Any", "Never Married", "Divorced", "Widowed", "Awaiting Divorce"];
+const COMMUNITY_OPTIONS = ["Any", "Reddy", "Kamma", "Kapu", "Brahmin", "Vysya", "SC", "ST", "BC", "Muslim", "Christian", "Other"];
+const OCCUPATION_OPTIONS = ["Any", "Software Engineer", "Doctor", "Government Job", "Business", "Teacher", "Banker", "Civil Services", "Other"];
+const SALARY_OPTIONS = [
+  { label: "Any", value: "" },
+  { label: "3+ LPA", value: "300000" },
+  { label: "5+ LPA", value: "500000" },
+  { label: "10+ LPA", value: "1000000" },
+  { label: "15+ LPA", value: "1500000" },
+  { label: "25+ LPA", value: "2500000" },
+];
+
+// --- SKELETON LOADER ---
+const DashboardSkeleton = () => (
+  <div className="ud-grid">
+    {[1, 2, 3, 4, 5, 6].map((i) => (
+      <div key={i} className="ud-skeleton-card">
+        <div className="ud-sk-circle ud-sk-animate"></div>
+        <div className="ud-sk-line ud-w-80 ud-sk-animate"></div>
+        <div className="ud-sk-line ud-w-40 ud-sk-animate"></div>
+        <div className="ud-sk-block ud-sk-animate"></div>
+      </div>
+    ))}
+  </div>
+);
 
 const UserDashboard = () => {
   const navigate = useNavigate();
-  
+
   // --- STATE ---
   const [matches, setMatches] = useState([]);
   const [dashboardLoading, setDashboardLoading] = useState(true);
-  const [error, setError] = useState('');
   const [isPremium, setIsPremium] = useState(false);
   const [regPaymentStatus, setRegPaymentStatus] = useState(null);
 
-  // --- PHOTO UPLOAD STATE ---
-  const [showPhotoUploadModal, setShowPhotoUploadModal] = useState(false);
-  const [needsPhotos, setNeedsPhotos] = useState(false); // NEW: Tracks if user still needs to upload photos
-  const [photoFiles, setPhotoFiles] = useState({ full: null, half: null, choice: null });
-  const [photoUploadLoading, setPhotoUploadLoading] = useState(false);
-  const [photoError, setPhotoError] = useState('');
+  // --- SEARCH STATE ---
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    searchId: '',
+    minAge: '', maxAge: '',
+    minHeight: '', maxHeight: '',
+    minSalary: '',
+    education: '',
+    subCommunity: '',
+    occupation: '',
+    maritalStatus: ''
+  });
 
-  // --- PAYMENT MODAL STATE ---
-  const [selectedProfile, setSelectedProfile] = useState(null); 
-  const [showModal, setShowModal] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false); 
+  // --- PHOTO & PAYMENT STATE ---
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [needsPhotos, setNeedsPhotos] = useState(false);
+  const [photoFiles, setPhotoFiles] = useState({ full: null, half: null, choice: null });
+  const [uploading, setUploading] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [showPayModal, setShowPayModal] = useState(false);
   const [paymentStep, setPaymentStep] = useState(1);
   const [paymentLoading, setPaymentLoading] = useState(false);
-  const [paymentError, setPaymentError] = useState('');
-  const [copied, setCopied] = useState(false);
-
-  // Form Fields
-  const INTEREST_AMOUNT = "500"; 
-  const UPI_ID = "8897714968@axl";
   const [utrNumber, setUtrNumber] = useState('');
   const [screenshot, setScreenshot] = useState(null);
 
-  const upiLink = `upi://pay?pa=${UPI_ID}&pn=Kalyana%20Shobha&am=${INTEREST_AMOUNT}&cu=INR`; 
-  
-  // API URLs
+  // --- CONSTANTS ---
+  const INTEREST_AMOUNT = "500";
+  const UPI_ID = "8897714968@axl";
   const API_BASE_URL = "https://kalyanashobha-back.vercel.app/api/user";
-  const PAYMENT_API_URL = "https://kalyanashobha-back.vercel.app/api/interest/submit-proof";
-  const REG_STATUS_URL = "https://kalyanashobha-back.vercel.app/api/payment/registration/status"; 
+  const upiDeepLink = `upi://pay?pa=${UPI_ID}&pn=Kalyana%20Shobha&am=${INTEREST_AMOUNT}&cu=INR`;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiDeepLink)}`;
 
   // --- INITIAL LOAD ---
   useEffect(() => {
-    const loadDashboardData = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) return navigate('/login');
+    fetchFeedAndData({});
+  }, []);
 
-      try {
-        const matchResponse = await fetch(`${API_BASE_URL}/dashboard-matches`, {
-          headers: { 'Content-Type': 'application/json', 'Authorization': token }
-        });
-        const matchData = await matchResponse.json();
+  const fetchFeedAndData = async (filterData) => {
+    const token = localStorage.getItem('token');
+    if (!token) return navigate('/login');
 
-        if (matchData.success) {
-          setMatches(matchData.data);
-          setIsPremium(matchData.isPremium);
+    try {
+      setSearchLoading(true);
+      const feedRes = await fetch(`${API_BASE_URL}/dashboard/feed`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': token },
+        body: JSON.stringify(filterData)
+      });
+      const feedData = await feedRes.json();
 
-          if (!matchData.isPremium) {
-            const regStatusResponse = await fetch(REG_STATUS_URL, {
-                headers: { 'Authorization': token }
-            });
-            const regStatusData = await regStatusResponse.json();
-            if (regStatusData.success && regStatusData.paymentFound) {
-                setRegPaymentStatus(regStatusData.data);
-            }
-          }
-        } else {
-          if(matchResponse.status === 401) { localStorage.removeItem('token'); navigate('/login'); }
-          setError(matchData.message);
-        }
-
-        const photoStatusResponse = await fetch(`${API_BASE_URL}/photos-status`, {
-           method: 'GET',
-           headers: { 'Authorization': token }
-        });
-        const photoStatusData = await photoStatusResponse.json();
+      if (feedData.success) {
+        setMatches(feedData.data);
+        setIsPremium(feedData.isPremium || false);
         
-        // NEW: If no photos, set flags to show modal AND remember they need photos
-        if (photoStatusData.success && !photoStatusData.hasPhotos) {
-          setNeedsPhotos(true);
-          setShowPhotoUploadModal(true);
+        if (Object.keys(filterData).length > 0 && feedData.count > 0) {
+            toast.success(`Found ${feedData.count} matches`);
+        } else if (Object.keys(filterData).length > 0 && feedData.count === 0) {
+            toast("No matches found");
         }
-      } catch (err) { 
-        setError("Server error."); 
-      } finally { 
-        setDashboardLoading(false); 
+
+        if (!feedData.isPremium) {
+          const regRes = await fetch("https://kalyanashobha-back.vercel.app/api/payment/registration/status", { 
+              headers: { 'Authorization': token } 
+          });
+          const regData = await regRes.json();
+          if (regData.success && regData.paymentFound) setRegPaymentStatus(regData.data);
+        }
+      } else {
+        if (feedRes.status === 401) { localStorage.removeItem('token'); navigate('/login'); }
+        toast.error(feedData.message || "Failed to load data");
       }
-    };
 
-    loadDashboardData();
-  }, [navigate]);
-
-  // --- NEW: ACTION GUARD (Intercepts actions if photos are missing) ---
-  const handleActionRequiringPhotos = (callback) => {
-    if (needsPhotos) {
-      setShowPhotoUploadModal(true); // Pop the modal back up!
-    } else {
-      callback(); // Proceed with the action
+      const photoRes = await fetch(`${API_BASE_URL}/photos-status`, { headers: { 'Authorization': token } });
+      const photoData = await photoRes.json();
+      if (photoData.success && !photoData.hasPhotos) {
+        setNeedsPhotos(true);
+        // Do NOT auto-show modal here, just set the state.
+        // We will show it when they try to Verify.
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Network error");
+    } finally {
+      setDashboardLoading(false);
+      setSearchLoading(false);
     }
   };
 
-  // --- PHOTO UPLOAD HANDLERS ---
-  const handlePhotoSelect = (type, file) => {
-    setPhotoFiles(prev => ({ ...prev, [type]: file }));
+  // --- HANDLERS ---
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value === "Any" ? "" : value }));
   };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!isPremium) return toast.error("Upgrade to Premium to search matches!");
+    fetchFeedAndData(filters);
+  };
+
+  const clearFilters = () => {
+    const emptyFilters = { 
+        searchId: '', minAge: '', maxAge: '', minHeight: '', maxHeight: '', 
+        minSalary: '', education: '', subCommunity: '', occupation: '', maritalStatus: '' 
+    };
+    setFilters(emptyFilters);
+    fetchFeedAndData(emptyFilters); 
+  };
+
+  // --- UPDATED HANDLER ---
+  const handleVerifyClick = () => {
+    // If already paid and waiting, show a toast instead of navigating
+    if (regPaymentStatus?.status === 'PendingVerification') {
+        toast("Verification is currently in progress. Please wait for admin approval.", { icon: '⏳' });
+        return;
+    }
+
+    if (needsPhotos) {
+        setShowPhotoModal(true);
+    } else {
+        navigate('/payment-registration');
+    }
+  };
+
+  
+    // --- ADD THIS FUNCTION ---
+  const handlePhotoSelect = (type, file) => {
+    if (file) {
+      setPhotoFiles(prev => ({
+        ...prev,
+        [type]: file
+      }));
+    }
+  };
+
 
   const submitPhotos = async (e) => {
     e.preventDefault();
-    setPhotoError('');
-
-    if (!photoFiles.full || !photoFiles.half) {
-      setPhotoError("Please upload at least the Full Length and Half Size photos.");
-      return;
-    }
-
-    setPhotoUploadLoading(true);
-    const token = localStorage.getItem('token');
+    if (!photoFiles.full || !photoFiles.half) return toast.error("Essential photos required");
+    setUploading(true);
     const formData = new FormData();
-
     formData.append('photos', photoFiles.full);
     formData.append('photos', photoFiles.half);
     if (photoFiles.choice) formData.append('photos', photoFiles.choice);
-
     try {
-      const response = await fetch(`${API_BASE_URL}/upload-photos`, {
-        method: 'POST',
-        headers: { 'Authorization': token },
-        body: formData 
+      const res = await fetch(`${API_BASE_URL}/upload-photos`, {
+        method: 'POST', headers: { 'Authorization': localStorage.getItem('token') }, body: formData
       });
-
-      const data = await response.json();
-      if (data.success || response.ok) {
-        setNeedsPhotos(false); // NEW: Mark photos as completed
-        setShowPhotoUploadModal(false); 
-      } else {
-        setPhotoError(data.message || "Failed to upload photos.");
-      }
-    } catch (error) {
-      setPhotoError("Network error during upload.");
-    } finally {
-      setPhotoUploadLoading(false);
-    }
+      const data = await res.json();
+      if (data.success || res.ok) { 
+          setNeedsPhotos(false); 
+          setShowPhotoModal(false); 
+          toast.success("Photos updated");
+          // After successful upload, redirect to payment
+          navigate('/payment-registration');
+      } 
+      else { toast.error(data.message); }
+    } catch { toast.error("Network error"); } finally { setUploading(false); }
   };
 
-  // --- CONNECT HANDLER ---
   const handleConnect = (profile) => {
-    // Check if they need photos first!
     if (needsPhotos) {
-      setShowPhotoUploadModal(true);
-      return;
-    }
-
-    if (!isPremium && regPaymentStatus?.status === 'PendingVerification') {
-      alert("Your verification is currently pending. Please wait for admin approval.");
-      return;
-    }
+        setShowPhotoModal(true);
+        return;
+    } 
     if (!isPremium) {
-      alert("Please verify your profile to connect.");
-      navigate('/payment-registration');
-      return;
+       if (regPaymentStatus?.status === 'PendingVerification') toast("Verification in progress");
+       else handleVerifyClick(); // Use shared logic
+       return;
     }
     setSelectedProfile(profile);
     setPaymentStep(1);
-    setUtrNumber('');
-    setScreenshot(null);
-    setPaymentError('');
-    setShowModal(true);
+    setShowPayModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedProfile(null);
-    setTimeout(() => setPaymentStep(1), 300); 
-  };
-
-  const handleCopyUPI = () => {
-    navigator.clipboard.writeText(UPI_ID);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handlePayClick = () => {
-    window.location.href = upiLink;
-    setTimeout(() => setPaymentStep(2), 2000);
-  };
-
-  const handleInterestSubmit = async (e) => {
+  const submitInterest = async (e) => {
     e.preventDefault();
-    setPaymentError('');
-
-    if (!utrNumber || !screenshot) {
-      setPaymentError("Required: UTR Number and Screenshot.");
-      return;
-    }
-
+    if (!utrNumber || !screenshot) return toast.error("Payment proof required");
     setPaymentLoading(true);
-    const token = localStorage.getItem('token');
-
+    const formData = new FormData();
+    formData.append('receiverId', selectedProfile.id);
+    formData.append('amount', INTEREST_AMOUNT);
+    formData.append('utrNumber', utrNumber);
+    formData.append('screenshot', screenshot);
     try {
-      const formData = new FormData();
-      formData.append('receiverId', selectedProfile.id);
-      formData.append('amount', INTEREST_AMOUNT);
-      formData.append('utrNumber', utrNumber);
-      formData.append('screenshot', screenshot);
-
-      const response = await fetch(PAYMENT_API_URL, {
-        method: 'POST',
-        headers: { 'Authorization': token },
-        body: formData
+      const res = await fetch("https://kalyanashobha-back.vercel.app/api/interest/submit-proof", {
+        method: 'POST', headers: { 'Authorization': localStorage.getItem('token') }, body: formData
       });
-
-      const data = await response.json();
-
+      const data = await res.json();
       if (data.success) {
-        setMatches(prevMatches => prevMatches.map(m => {
-            if (m.id === selectedProfile.id) return { ...m, interestStatus: 'PendingPaymentVerification' };
-            return m;
-        }));
-        setShowModal(false); 
-        setShowSuccess(true);
-      } else {
-        setPaymentError(data.message || "Submission failed.");
-      }
-    } catch (err) {
-      setPaymentError("Network error.");
-    } finally {
-      setPaymentLoading(false);
-    }
+        setMatches(prev => prev.map(m => m.id === selectedProfile.id ? { ...m, interestStatus: 'PendingPaymentVerification' } : m));
+        setShowPayModal(false);
+        toast.success("Interest sent successfully");
+      } else { toast.error(data.message); }
+    } catch { toast.error("Network error"); } finally { setPaymentLoading(false); }
   };
 
-  const renderConnectButton = (profile) => {
-    const status = profile.interestStatus; 
-    if (status === 'PendingPaymentVerification' || status === 'PendingAdmin' || status === 'PendingUser') {
-        return <button className="connect-btn" disabled style={{ backgroundColor: '#F39C12', cursor: 'default' }}>Requested</button>;
-    }
-    if (status === 'Accepted') {
-        return <button className="connect-btn" disabled style={{ backgroundColor: '#27AE60', cursor: 'default' }}>Connected</button>;
-    }
-    if (status === 'Declined') {
-        return <button className="connect-btn" disabled style={{ backgroundColor: '#DC2626', cursor: 'default' }}>Declined</button>;
+  const renderStatusBtn = (status) => {
+    if (['PendingPaymentVerification', 'PendingAdmin', 'PendingUser', 'Accepted', 'Declined'].includes(status)) {
+        return <button className="ud-btn ud-btn-disabled" disabled>{status.replace(/([A-Z])/g, ' $1').trim()}</button>;
     }
     return (
-        <button className={`connect-btn ${!isPremium ? 'disabled-look' : ''}`} onClick={() => handleConnect(profile)}>
-            {isPremium ? "Send Interest" : "Verify to Connect"}
-        </button>
+      <button className={`ud-btn ${!isPremium ? 'ud-btn-locked' : 'ud-btn-accent'}`} onClick={() => handleConnect(selectedProfile)}>
+        {!isPremium ? <><Icons.Lock /> Verify to Connect</> : "Send Interest"}
+      </button>
     );
   };
-
-  if (dashboardLoading) return <div className="dashboard-loader"><div className="spinner"></div></div>;
 
   return (
     <>
       <Navbar />
-      <div className={`dashboard-container ${showModal || showSuccess || showPhotoUploadModal ? 'blur-bg' : ''}`}>
-        
-        <div className="dashboard-header">
+      <Toaster toastOptions={{ style: { background: '#1e293b', color: '#fff', fontFamily: 'Inter' } }} />
 
-          <p>Matched based on your community and preferences.</p>
+      <div className="ud-dashboard">
+        <div className="ud-container ud-header-section">
+          <p className="ud-subtitle">Find your perfect match</p>
         </div>
 
-        {/* --- PREMIUM BANNER --- */}
-        {!isPremium && (
-          <div className="premium-banner">
-            {regPaymentStatus?.status === 'PendingVerification' ? (
-              <>
-                <div className="banner-content">
-                  <h3>Verification Pending</h3>
-                  <p>We are reviewing your payment of ₹{regPaymentStatus.amount}. UTR: {regPaymentStatus.utrNumber}</p>
-                </div>
-                <button className="upgrade-btn disabled-btn">In Review</button>
-              </>
-            ) : regPaymentStatus?.status === 'Rejected' ? (
-              <>
-                <div className="banner-content">
-                  <h3>Verification Failed</h3>
-                  <p>Your previous payment was rejected. Please try again.</p>
-                </div>
-                {/* Wrapped the Verify Action! */}
-                <button className="upgrade-btn" onClick={() => handleActionRequiringPhotos(() => navigate('/payment-registration'))}>Retry</button>
-              </>
-            ) : (
-              <>
-                <div className="banner-content">
-                  <h3>Action Required: Verify Your Profile</h3>
-                  <p>Verify to become active and visible to others.</p>
-                </div>
-                {/* Wrapped the Verify Action! */}
-                <button className="upgrade-btn" onClick={() => handleActionRequiringPhotos(() => navigate('/payment-registration'))}>Verify Now</button>
-              </>
-            )}
-          </div>
-        )}
-
-        {error && <div className="error-message">{error}</div>}
-        {!dashboardLoading && matches.length === 0 && <div className="no-matches"><h3>No Matches Found</h3></div>}
-
-        <div className="profiles-grid">
-          {matches.map((profile) => (
-            <div key={profile.id} className="profile-card">
-              <div className="card-image">
-                <div className="anonymous-avatar"><Icons.FemaleAvatar /></div>
-                <span className="match-tag">95% Match</span>
-              </div>
-              <div className="card-details">
-                <div className="card-header-row">
-                  <div className="name-wrapper"><h3>{profile.name}</h3><span className="verify-badge"><Icons.VerifiedBadge/></span></div>
-                  <span className="age-badge">{profile.age} Yrs</span>
-                </div>
-                <p className="job-role">{profile.job || "Not Specified"}</p>
-                <div className="info-grid">
-                  <div className="info-item"><span className="label">Education</span><span className="val">{profile.education || "--"}</span></div>
-                  <div className="info-item"><span className="label">Community</span><span className="val">{profile.subCommunity || "--"}</span></div>
-                  <div className="info-item"><span className="label">Status</span><span className="val">{profile.maritalStatus || "--"}</span></div>
-                  <div className="info-item"><span className="label">Location</span><span className="val">{profile.location || "--"}</span></div>
-                </div>
-                <div className="card-actions">
-                  {renderConnectButton(profile)}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* --- PHOTO UPLOAD MODAL --- */}
-      {showPhotoUploadModal && (
-        <div className="ks-modal-overlay"> {/* Removed ks-blocking-overlay so it matches normal modals */}
-          <div className="ks-checkout-modal photo-upload-modal fade-in">
+        {dashboardLoading ? <DashboardSkeleton /> : (
+          <div className="ud-container">
             
-            {/* NEW: Added a close button at the top */}
-            <div className="ks-checkout-top">
-              <button className="ks-close-btn" onClick={() => setShowPhotoUploadModal(false)}>✕</button>
-            </div>
+            {/* --- SEARCH SECTION --- */}
+            <div className="ud-search-section">
+              <div className="ud-search-card">
+                
+                {/* --- UPDATED OVERLAY LOGIC --- */}
+                {!isPremium && (
+                  <div 
+                    className="ud-search-locked-overlay" 
+                    onClick={handleVerifyClick}
+                    // Change cursor to default if pending so it doesn't look clickable
+                    style={{ cursor: regPaymentStatus?.status === 'PendingVerification' ? 'default' : 'pointer' }}
+                  >
+                    {regPaymentStatus?.status === 'PendingVerification' ? (
+                      <>
+                        {/* PENDING STATE UI */}
+{/* PENDING STATE UI */}
+<div className="ud-pending-status"> {/* <--- Added this class */}
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <polyline points="12 6 12 12 16 14"></polyline>
+  </svg>
+  Verification Pending
+</div>
 
-            <div className="ks-modal-header">
-              <h2>Complete Your Profile</h2>
-              <p>Upload photos to unlock full access</p>
-            </div>
-            
-            <div className="ks-modal-content">
-              <form onSubmit={submitPhotos}>
-                <div className="ks-photo-group">
-                  <label>1. Full Length Photo <span className="ks-req">*</span></label>
-                  <div className={`ks-file-drop ${photoFiles.full ? 'ks-selected' : ''}`}>
-                    <input type="file" accept="image/*" required onChange={(e) => handlePhotoSelect('full', e.target.files[0])} />
-                    <div className="ks-drop-content">
-                      <Icons.UploadIcon />
-                      <span>{photoFiles.full ? photoFiles.full.name : "Choose full photo"}</span>
-                    </div>
+                        <p className="ud-subtitle" style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
+                          Payment submitted. Waiting for admin approval.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        {/* DEFAULT LOCKED STATE UI */}
+                        <div className="ud-lock-msg"><Icons.Lock /> Premium Search</div>
+                        <p className="ud-subtitle" style={{ fontSize: '0.8rem' }}>
+                          Verify profile to use Advanced Filters
+                        </p>
+                      </>
+                    )}
                   </div>
-                </div>
+                )}
 
-                <div className="ks-photo-group">
-                  <label>2. Passport Size Photo <span className="ks-req">*</span></label>
-                  <div className={`ks-file-drop ${photoFiles.half ? 'ks-selected' : ''}`}>
-                    <input type="file" accept="image/*" required onChange={(e) => handlePhotoSelect('half', e.target.files[0])} />
-                     <div className="ks-drop-content">
-                      <Icons.UploadIcon />
-                      <span>{photoFiles.half ? photoFiles.half.name : "Choose passport photo"}</span>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="ks-photo-group">
-                  <label>3. Optional Casual Photo</label>
-                  <div className={`ks-file-drop ${photoFiles.choice ? 'ks-selected' : ''}`}>
-                    <input type="file" accept="image/*" onChange={(e) => handlePhotoSelect('choice', e.target.files[0])} />
-                     <div className="ks-drop-content">
-                      <Icons.UploadIcon />
-                      <span>{photoFiles.choice ? photoFiles.choice.name : "Choose casual photo"}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {photoError && <div className="ks-alert ks-alert-error">{photoError}</div>}
-
-                <button type="submit" className="ks-btn-primary" disabled={photoUploadLoading}>
-                  {photoUploadLoading ? "Uploading..." : "Save & Continue"}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- STRIPE/RAZORPAY STYLE PAYMENT MODAL --- */}
-      {/* ... [Rest of your Payment Modal code exactly as before] ... */}
-      {showModal && selectedProfile && (
-        <div className="ks-modal-overlay">
-           <div className="ks-checkout-modal fade-in">
-            <div className="ks-checkout-top">
-              <button className="ks-close-btn" onClick={closeModal}>✕</button>
-            </div>
-            
-            <div className="ks-checkout-header">
-              <p className="ks-merchant-name">Kalyana Shobha Interest Request</p>
-              <h2 className="ks-checkout-amount">₹{INTEREST_AMOUNT}.00</h2>
-              <p className="ks-checkout-desc">Connecting with {selectedProfile.name}</p>
-            </div>
-
-            <div className="ks-checkout-body">
-              {paymentStep === 1 && (
-                <div className="ks-step-slide">
-                  <div className="ks-upi-box">
-                    <div className="ks-upi-details">
-                      <span className="ks-upi-label">Pay via UPI App or Copy ID</span>
-                      <span className="ks-upi-id">{UPI_ID}</span>
-                    </div>
-                    <button className="ks-copy-btn" onClick={handleCopyUPI} title="Copy UPI ID">
-                      {copied ? <span className="ks-copied-text">Copied!</span> : <Icons.CopyIcon />}
-                    </button>
-                  </div>
-
-                  <button className="ks-btn-primary" onClick={handlePayClick}>
-                    Open UPI App
-                  </button>
-                  
-                  <div className="ks-divider">
-                    <span>or</span>
-                  </div>
-
-                  <button className="ks-btn-secondary" onClick={() => setPaymentStep(2)}>
-                    I have already paid
-                  </button>
-                </div>
-              )}
-
-              {paymentStep === 2 && (
-                <form onSubmit={handleInterestSubmit} className="ks-step-slide fade-in">
-                  <div className="ks-checkout-nav">
-                    <span onClick={() => setPaymentStep(1)}>← Back to payment methods</span>
-                  </div>
-
-                  <div className="ks-input-group">
-                    <label>Transaction Reference (UTR)</label>
+                <div className="ud-search-bar">
+                  <div className="ud-search-input-group">
+                    <div className="ud-search-icon-box"><Icons.Search /></div>
                     <input 
                       type="text" 
-                      placeholder="Enter 12-digit UTR number" 
-                      value={utrNumber}
-                      onChange={(e) => setUtrNumber(e.target.value)}
+                      name="searchId"
+                      className="ud-main-search-input" 
+                      placeholder="Search by ID (e.g. KS1023)..." 
+                      value={filters.searchId}
+                      onChange={handleFilterChange}
+                      disabled={!isPremium}
                     />
                   </div>
+                  <button 
+                    className={`ud-filter-toggle ${showFilters ? 'active' : ''}`} 
+                    onClick={() => isPremium && setShowFilters(!showFilters)}
+                    disabled={!isPremium}
+                  >
+                    <Icons.Filter /> Advanced <Icons.ChevronDown />
+                  </button>
+                  <button 
+                    className="ud-btn ud-btn-primary" 
+                    style={{width:'auto', padding:'0.75rem 1.5rem'}}
+                    onClick={handleSearch}
+                    disabled={!isPremium || searchLoading}
+                  >
+                    {searchLoading ? 'Searching...' : 'Search'}
+                  </button>
+                </div>
 
-                  <div className="ks-input-group">
-                    <label>Payment Screenshot</label>
-                    <div className="ks-file-input-wrapper">
-                      <input 
-                        type="file" 
-                        accept="image/*"
-                        onChange={(e) => setScreenshot(e.target.files[0])}
-                      />
-                      <div className="ks-file-input-display">
-                        <Icons.UploadIcon />
-                        <span>{screenshot ? screenshot.name : "Attach Screenshot"}</span>
+                {/* --- FILTERS PANEL --- */}
+                {showFilters && isPremium && (
+                  <div className="ud-filters-panel">
+                    <div className="ud-filters-grid">
+                      {/* ... Filters (Same as before) ... */}
+                      <div className="ud-form-group">
+                        <label className="ud-label">Age (Years)</label>
+                        <div style={{display:'flex', gap:'0.5rem'}}>
+                           <input type="number" name="minAge" placeholder="Min" className="ud-input" value={filters.minAge} onChange={handleFilterChange}/>
+                           <input type="number" name="maxAge" placeholder="Max" className="ud-input" value={filters.maxAge} onChange={handleFilterChange}/>
+                        </div>
+                      </div>
+                      <div className="ud-form-group">
+                        <label className="ud-label">Marital Status</label>
+                        <select name="maritalStatus" className="ud-input" value={filters.maritalStatus} onChange={handleFilterChange}>
+                           {MARITAL_STATUS_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                      </div>
+                      <div className="ud-form-group">
+                        <label className="ud-label">Education</label>
+                        <select name="education" className="ud-input" value={filters.education} onChange={handleFilterChange}>
+                           {EDUCATION_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                      </div>
+                      <div className="ud-form-group">
+                         <label className="ud-label">Community</label>
+                         <select name="subCommunity" className="ud-input" value={filters.subCommunity} onChange={handleFilterChange}>
+                            {COMMUNITY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                         </select>
+                      </div>
+                       <div className="ud-form-group">
+                         <label className="ud-label">Occupation</label>
+                         <select name="occupation" className="ud-input" value={filters.occupation} onChange={handleFilterChange}>
+                            {OCCUPATION_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                         </select>
+                      </div>
+                      <div className="ud-form-group">
+                         <label className="ud-label">Min Annual Income</label>
+                         <select name="minSalary" className="ud-input" value={filters.minSalary} onChange={handleFilterChange}>
+                            {SALARY_OPTIONS.map(opt => <option key={opt.label} value={opt.value}>{opt.label}</option>)}
+                         </select>
+                      </div>
+                      <div className="ud-form-group">
+                        <label className="ud-label">Height (Cm)</label>
+                        <div style={{display:'flex', gap:'0.5rem'}}>
+                           <input type="number" name="minHeight" placeholder="Min" className="ud-input" value={filters.minHeight} onChange={handleFilterChange}/>
+                           <input type="number" name="maxHeight" placeholder="Max" className="ud-input" value={filters.maxHeight} onChange={handleFilterChange}/>
+                        </div>
                       </div>
                     </div>
+                    <div className="ud-filter-actions">
+                      <button className="ud-btn ud-btn-outline" style={{width:'auto'}} onClick={clearFilters}>Reset All</button>
+                      <button className="ud-btn ud-btn-accent" style={{width:'auto'}} onClick={handleSearch}>Apply Filters</button>
+                    </div>
                   </div>
-
-                  {paymentError && <div className="ks-alert ks-alert-error">{paymentError}</div>}
-
-                  <button type="submit" className="ks-btn-primary" disabled={paymentLoading}>
-                    {paymentLoading ? "Processing..." : "Submit for Verification"}
-                  </button>
-                </form>
-              )}
+                )}
+              </div>
             </div>
+
+            {/* --- BANNER --- */}
+            {!isPremium && regPaymentStatus?.status !== 'PendingVerification' && (
+              <div className="ud-banner">
+                <div className="ud-banner-info"><h3>Complete Verification</h3><p>Unlock premium features to connect with profiles.</p></div>
+                <button className="ud-btn ud-btn-primary" style={{width:'auto'}} onClick={handleVerifyClick}>Verify Now</button>
+              </div>
+            )}
+
+            {/* --- EMPTY STATE --- */}
+            {matches.length === 0 && (
+              <div className="ud-empty-state">
+                <div style={{width:'60px', height:'60px', margin:'0 auto', color:'#cbd5e1'}}><Icons.Search /></div>
+                <h3>No Matches Found</h3>
+                <p>Try adjusting your filters.</p>
+                {filters.searchId || filters.minAge ? (
+                    <button className="ud-btn ud-btn-outline" style={{marginTop:'1rem', width:'auto', display:'inline-flex'}} onClick={clearFilters}>Clear Filters</button>
+                ) : null}
+              </div>
+            )}
+
+            {/* --- GRID --- */}
+            <div className="ud-grid">
+              {matches.map((profile) => (
+                <div key={profile.id} className="ud-card">
+                  <div className="ud-card-header">
+                    <div className="ud-avatar-box">
+                      {profile.gender === 'Male' ? <Icons.Male /> : <Icons.Female />}
+                    </div>
+                  </div>
+                  <div className="ud-card-body">
+                    <div className="ud-profile-header">
+                      <div className="ud-name">{profile.name} <Icons.Verify /></div>
+                      <span className="ud-age-badge">{profile.age} Yrs</span>
+                    </div>
+                    <p className="ud-job">{profile.occupation || profile.job || "Not Specified"}</p>
+                    <div className="ud-info-grid">
+                      <div className="ud-info-item"><span className="ud-lbl">Education</span><span className="ud-val">{profile.education || "--"}</span></div>
+                      <div className="ud-info-item"><span className="ud-lbl">Community</span><span className="ud-val">{profile.subCommunity || profile.community || "--"}</span></div>
+                      <div className="ud-info-item"><span className="ud-lbl">Location</span><span className="ud-val">{profile.location || "--"}</span></div>
+                      <div className="ud-info-item"><span className="ud-lbl">ID</span><span className="ud-val">{profile.uniqueId || "--"}</span></div>
+                      <div className="ud-info-item"><span className="ud-lbl">Height</span><span className="ud-val">{profile.height ? `${profile.height} cm` : "--"}</span></div>
+                      <div className="ud-info-item"><span className="ud-lbl">Status</span><span className="ud-val">{profile.status || "--"}</span></div>
+                    </div>
+                    <div onClick={() => handleConnect(profile)} style={{marginTop:'auto'}}>
+                       {renderStatusBtn(profile.interestStatus)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* --- PHOTO MODAL --- */}
+      {showPhotoModal && (
+        <div className="ud-overlay">
+          <div className="ud-modal">
+            <button className="ud-close-btn" onClick={() => setShowPhotoModal(false)}>✕</button>
+            <h2 className="ud-title">Profile Photos Required</h2>
+            <p className="ud-subtitle" style={{marginBottom:'1.5rem'}}>Upload your photos to proceed with verification.</p>
+            <form onSubmit={submitPhotos}>
+              {['full', 'half', 'choice'].map((type) => (
+                <div key={type} className="ud-form-group">
+                  <label className="ud-label">{type === 'full' ? 'Full Body' : type === 'half' ? 'Passport Size' : 'Casual (Optional)'}</label>
+                  <div className={`ud-upload-zone ${photoFiles[type] ? 'active' : ''}`}>
+                    <input className="ud-file-input" type="file" accept="image/*" onChange={(e) => handlePhotoSelect(type, e.target.files[0])} />
+                    <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'0.5rem'}}>
+                      <Icons.Upload /><span className="ud-lbl">{photoFiles[type] ? photoFiles[type].name : "Click to Upload"}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button type="submit" className="ud-btn ud-btn-primary" disabled={uploading}>{uploading ? "Uploading..." : "Save & Continue to Payment"}</button>
+            </form>
           </div>
         </div>
       )}
 
-      {/* --- SUCCESS MODAL --- */}
-      {showSuccess && (
-        <div className="ks-modal-overlay">
-          <div className="ks-checkout-modal ks-success-state fade-in">
-            <div className="ks-success-icon"><Icons.CheckCircle /></div>
-            <h3>Request Submitted</h3>
-            <p>Your payment is being verified by the admin. The interest will be sent shortly.</p>
-            <button className="ks-btn-primary" onClick={() => setShowSuccess(false)}>Done</button>
+      {/* --- PAYMENT MODAL --- */}
+      {showPayModal && selectedProfile && (
+        <div className="ud-overlay">
+          <div className="ud-modal">
+            <button className="ud-close-btn" onClick={() => setShowPayModal(false)}>✕</button>
+            <div className="ud-pay-header">
+              <p className="ud-lbl">Connect Request</p>
+              <div className="ud-pay-amount">₹{INTEREST_AMOUNT}</div>
+              <p className="ud-pay-desc">Pay to connect with {selectedProfile.name}</p>
+            </div>
+            {paymentStep === 1 ? (
+              <>
+                <a href={upiDeepLink} className="ud-mobile-pay-btn">Pay Now via UPI App</a>
+                <div className="ud-qr-container">
+                  <div className="ud-qr-code"><img src={qrCodeUrl} alt="Scan to Pay" style={{display:'block', width:'100%', maxWidth:'200px'}}/></div>
+                  <div className="ud-copy-row"><span>{UPI_ID}</span><button onClick={() => { navigator.clipboard.writeText(UPI_ID); toast.success("Copied"); }} style={{background:'none', border:'none', cursor:'pointer'}}><Icons.Copy /></button></div>
+                </div>
+                <div className="ud-pay-actions"><button className="ud-btn ud-btn-outline" onClick={() => setPaymentStep(2)}>I have completed payment</button></div>
+              </>
+            ) : (
+              <form onSubmit={submitInterest}>
+                 <div className="ud-form-group"><label className="ud-label">UTR / Transaction ID</label><input className="ud-input" placeholder="e.g. 328109..." value={utrNumber} onChange={(e) => setUtrNumber(e.target.value)} required/></div>
+                 <div className="ud-form-group"><label className="ud-label">Screenshot</label><div className="ud-upload-zone sm"><input className="ud-file-input" type="file" accept="image/*" onChange={(e) => setScreenshot(e.target.files[0])} required /><span className="ud-lbl">{screenshot ? screenshot.name : "Attach Proof"}</span></div></div>
+                 <div style={{display:'flex', gap:'1rem'}}><button type="button" className="ud-btn ud-btn-outline" onClick={() => setPaymentStep(1)}>Back</button><button type="submit" className="ud-btn ud-btn-primary" disabled={paymentLoading}>{paymentLoading ? "Verifying..." : "Submit"}</button></div>
+              </form>
+            )}
           </div>
         </div>
       )}
