@@ -31,7 +31,7 @@ const AdminNavbar = () => {
         {/* Left Side: Logo */}
         <div className="an-navbar-logo">
           <Link to="/admin/dashboard">
-             <img src="/kalyanashobha.png" alt="Kalyana Shobha Admin" />
+             <img src="/Kalyanashobha.png" alt="Kalyana Shobha Admin" />
           </Link>
         </div>
 
