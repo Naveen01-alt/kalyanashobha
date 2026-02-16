@@ -1,106 +1,143 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
 
-  // Check if user is logged in (Token check)
+  // Check login status
   const isLoggedIn = !!localStorage.getItem('token');
+
+  // Handle Scroll Effect for premium feel
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+    // Lock body scroll when menu is open
+    document.body.style.overflow = !isOpen ? 'hidden' : 'auto';
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
+    document.body.style.overflow = 'auto';
   };
 
   const handleLogout = () => {
-    // Clear user data
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    
-    setIsOpen(false); // Close menu
-    navigate('/'); // Redirect to Home
+    closeMenu();
+    navigate('/');
   };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-           {/* Left Side: Logo */}
-        <div className="an-navbar-logo">
-          <Link to="/">
-             <img src="/kalyanashobha.png" alt="Kalyana Shobha" />
+    <header className={`ks-header ${scrolled ? 'ks-header--scrolled' : ''}`}>
+      <div className="ks-header__container">
+
+        {/* --- Logo Section --- */}
+        <div className="ks-header__brand">
+          <Link to="/" onClick={closeMenu} className="ks-header__logo-link">
+            {/* Ideally, use your actual image here. 
+             If image fails, this text structure mimics the logo style. */}
+            <img src="/Kalyanashobha.png" alt="Kalyana Shobha" className="ks-logo-img" />
           </Link>
         </div>
 
-        {/* Right Side: Desktop Links */}
-        <ul className="navbar-links">
-          <li><Link to="/">Home</Link></li>
-
-          {/* 1. AGENT OPTION: Only show when NO USER is logged in */}
-          {!isLoggedIn && (
-            <li><Link to="/agent/login">Agent</Link></li>
-          )}
-
-          {/* 2. LOGGED IN USER OPTIONS */}
-          {isLoggedIn && (
-            <>
-              <li><Link to="/myprofile">My Profile</Link></li>
-              <li><Link to="/interests">Interests</Link></li>
-              <li><Link to="/payments">Payments</Link></li>
-              {/* VENDORS: Only show when logged in */}
-              <li><Link to="/vendor">Vendors</Link></li>
-            </>
-          )}
-
-          {isLoggedIn ? (
-            <li>
-              <button onClick={handleLogout} className="nav-btn">Logout</button>
+        {/* --- Desktop Navigation --- */}
+        <nav className="ks-nav">
+          <ul className="ks-nav__list">
+            <li className="ks-nav__item">
+              <Link to="/" className="ks-nav__link">Home</Link>
             </li>
-          ) : (
-            <li><Link to="/login" className="nav-btn">Login</Link></li>
-          )}
-        </ul>
 
-        {/* Mobile Menu Icon (Hamburger) */}
-        <div className={`hamburger ${isOpen ? 'is-active' : ''}`} onClick={toggleMenu}>
-          <span className="line line-1"></span>
-          <span className="line line-2"></span>
-          <span className="line line-3"></span>
+            {/* --- MOVED: Vendors is now always visible --- */}
+            <li className="ks-nav__item">
+              <Link to="/vendor" className="ks-nav__link">Vendors</Link>
+            </li>
+
+            {/* Agent: Only if NOT logged in */}
+            {!isLoggedIn && (
+              <li className="ks-nav__item">
+                <Link to="/agent/login" className="ks-nav__link">Agent</Link>
+              </li>
+            )}
+
+            {/* User Links: Only if logged in */}
+            {isLoggedIn && (
+              <>
+                <li className="ks-nav__item"><Link to="/myprofile" className="ks-nav__link">My Profile</Link></li>
+                <li className="ks-nav__item"><Link to="/interests" className="ks-nav__link">Interests</Link></li>
+                <li className="ks-nav__item"><Link to="/payments" className="ks-nav__link">Payments</Link></li>
+                {/* Vendors removed from here since it's now global */}
+              </>
+            )}
+          </ul>
+        </nav>
+
+        {/* --- Action Buttons (Desktop) --- */}
+        <div className="ks-header__actions">
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="ks-btn ks-btn--outline">
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="ks-btn ks-btn--primary">
+              Login
+            </Link>
+          )}
+        </div>
+
+        {/* --- Modern Hamburger (Staggered Lines) --- */}
+        <button
+          className={`ks-hamburger ${isOpen ? 'is-active' : ''}`}
+          onClick={toggleMenu}
+          aria-label="Menu"
+        >
+          <span className="ks-hamburger__line line-top"></span>
+          <span className="ks-hamburger__line line-middle"></span>
+          <span className="ks-hamburger__line line-bottom"></span>
+        </button>
+      </div>
+
+      {/* --- Mobile Sidebar Overlay --- */}
+      <div className={`ks-mobile-menu ${isOpen ? 'is-visible' : ''}`}>
+        <div className="ks-mobile-menu__content">
+          <ul className="ks-mobile-list">
+            <li style={{ '--i': 1 }}><Link to="/" onClick={closeMenu}>Home</Link></li>
+            
+            {/* --- MOVED: Vendors always visible on Mobile too --- */}
+            <li style={{ '--i': 2 }}><Link to="/vendor" onClick={closeMenu}>Vendors</Link></li>
+
+            {!isLoggedIn && (
+              <li style={{ '--i': 3 }}><Link to="/agent/login" onClick={closeMenu}>Agent</Link></li>
+            )}
+
+            {isLoggedIn && (
+              <>
+                <li style={{ '--i': 3 }}><Link to="/myprofile" onClick={closeMenu}>My Profile</Link></li>
+                <li style={{ '--i': 4 }}><Link to="/interests" onClick={closeMenu}>Interests</Link></li>
+                <li style={{ '--i': 5 }}><Link to="/payments" onClick={closeMenu}>Payments</Link></li>
+              </>
+            )}
+          </ul>
+
+          <div className="ks-mobile-actions">
+            {isLoggedIn ? (
+              <button onClick={handleLogout} className="ks-btn ks-btn--outline full-width">Logout</button>
+            ) : (
+              <Link to="/login" onClick={closeMenu} className="ks-btn ks-btn--primary full-width">Login</Link>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Mobile Sidebar Overlay */}
-      <div className={`mobile-menu ${isOpen ? 'is-open' : ''}`}>
-        <ul className="mobile-links">
-          <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
-
-          {/* AGENT: Only show in sidebar if NOT logged in */}
-          {!isLoggedIn && (
-            <li><Link to="/agent/login" onClick={toggleMenu}>Agent</Link></li>
-          )}
-
-          {isLoggedIn && (
-            <>
-              <li><Link to="/myprofile" onClick={toggleMenu}>My Profile</Link></li>
-              <li><Link to="/interests" onClick={toggleMenu}>Interests</Link></li>
-              <li><Link to="/payments" onClick={toggleMenu}>Payments</Link></li>
-              {/* VENDORS: Show in sidebar only when logged in */}
-              <li><Link to="/vendor" onClick={toggleMenu}>Vendors</Link></li>
-            </>
-          )}
-
-          {isLoggedIn ? (
-            <li className="mobile-btn-wrapper">
-              <button onClick={handleLogout} className="nav-btn mobile-btn">Logout</button>
-            </li>
-          ) : (
-            <li className="mobile-btn-wrapper">
-              <Link to="/login" onClick={toggleMenu} className="nav-btn mobile-btn">Login</Link>
-            </li>
-          )}
-        </ul>
-      </div>
-    </nav>
+    </header>
   );
 };
 
