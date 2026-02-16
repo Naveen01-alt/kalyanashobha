@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react'; 
 import { useNavigate, useSearchParams } from 'react-router-dom'; 
-import toast, { Toaster } from 'react-hot-toast'; // Imported Toast
+import toast, { Toaster } from 'react-hot-toast'; 
+import SignatureCanvas from 'react-signature-canvas'; 
 import './Registration.css';
 import Navbar from "../../Components/Navbar.jsx";
 
@@ -17,20 +18,16 @@ const PROFESSIONS = ["Software Engineer", "Banking Professional", "Doctor", "Nur
 
 // --- ICONS (SVG) ---
 const Icons = {
-  User: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>,
-  Heart: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>,
-  Location: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
-  Book: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
-  Briefcase: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>,
-  Mail: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>,
   ChevronDown: () => <svg className="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>,
   Eye: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>,
-  EyeOff: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+  EyeOff: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>,
+  ArrowRight: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
 };
 
-// --- CUSTOM COMPONENTS ---
+// --- COMPONENTS ---
+// Added 'stagger-item' class for sequential animation
 const CustomSelect = ({ label, name, value, onChange, options, error, placeholder = "Select" }) => (
-  <div className={`input-group ${error ? 'has-error' : ''}`}>
+  <div className={`input-group stagger-item ${error ? 'has-error' : ''}`}>
     <label>{label}</label>
     <div className="select-wrapper">
       <select name={name} value={value} onChange={onChange}>
@@ -46,82 +43,70 @@ const CustomSelect = ({ label, name, value, onChange, options, error, placeholde
 );
 
 const CustomInput = ({ label, name, type="text", placeholder, value, onChange, error, autoComplete }) => (
-  <div className={`input-group ${error ? 'has-error' : ''}`}>
+  <div className={`input-group stagger-item ${error ? 'has-error' : ''}`}>
     <label>{label}</label>
-    <input 
-      type={type} 
-      name={name} 
-      value={value} 
-      onChange={onChange} 
-      placeholder={placeholder} 
-      autoComplete={autoComplete}
-    />
+    <input type={type} name={name} value={value} onChange={onChange} placeholder={placeholder} autoComplete={autoComplete} />
     {error && <span className="error-msg">{error}</span>}
   </div>
 );
 
 const Register = () => {
   const [step, setStep] = useState(1);
+  const [direction, setDirection] = useState('forward'); // 'forward' or 'back' for animation logic
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false); // Added for professional password UX
+  const [showPassword, setShowPassword] = useState(false); 
   const navigate = useNavigate(); 
-  
-  // Extract referral parameters from the URL
   const [searchParams] = useSearchParams();
   const refId = searchParams.get('refId');
   const refName = searchParams.get('refName');
-  
+
+  // --- VERIFICATION STATE ---
+  const sigRef = useRef(null); 
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   const [formData, setFormData] = useState({
-    profileFor: 'Myself',
-    gender: 'Male',
-    firstName: '',
-    lastName: '',
-    dobDay: '',
-    dobMonth: '',
-    dobYear: '',
-    religion: '',
-    community: '',
-    country: 'India',
-    email: '',
-    password: '', 
-    mobileNumber: '',
-    state: '',
-    city: '',
-    subCommunity: '',
-    maritalStatus: 'Never Married',
-    height: '',
-    diet: 'Veg',
-    highestQualification: '',
-    college: '',
-    annualIncome: '',
-    workWith: 'Private Company',
-    workAs: '',
-    companyName: ''
+    profileFor: 'Myself', gender: 'Male', firstName: '', lastName: '',
+    dobDay: '', dobMonth: '', dobYear: '', religion: '', community: '', country: 'India',
+    email: '', password: '', mobileNumber: '', state: '', city: '', subCommunity: '',
+    maritalStatus: 'Never Married', height: '', diet: 'Veg',
+    highestQualification: '', college: '', annualIncome: '', workWith: 'Private Company', workAs: '', companyName: ''
   });
+
+  // Scroll to top on step change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: '' });
-    }
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
+    if (errors[name]) setErrors({ ...errors, [name]: '' });
   };
 
   const selectOption = (name, value) => {
     setFormData({ ...formData, [name]: value });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: '' });
-    }
+    if (errors[name]) setErrors({ ...errors, [name]: '' });
   };
 
+  const clearSignature = () => sigRef.current.clear();
+
+  const dataURLtoFile = (dataurl, filename) => {
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+  }
+
+  // --- VALIDATION ---
   const validateStep = (currentStep) => {
     let newErrors = {};
     let isValid = true;
-
     const require = (field, msg = "Required") => {
       if (!formData[field] || formData[field].toString().trim() === "") {
         newErrors[field] = msg;
@@ -130,295 +115,258 @@ const Register = () => {
     };
 
     switch (currentStep) {
-      case 1:
-        require("profileFor");
-        require("gender");
-        break;
-      case 2:
-        require("firstName", "Enter first name");
-        require("lastName", "Enter last name");
-        require("dobDay");
-        require("dobMonth");
-        require("dobYear");
-        break;
-      case 3:
-        require("religion");
-        require("community");
-        require("country");
-        break;
-      case 4:
-        require("email", "Enter valid email");
-        if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Invalid email format";
-            isValid = false;
-        }
+      case 1: require("profileFor"); require("gender"); break;
+      case 2: require("firstName"); require("lastName"); require("dobDay"); require("dobMonth"); require("dobYear"); break;
+      case 3: require("religion"); require("community"); require("country"); break;
+      case 4: 
+        require("email");
+        if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) { newErrors.email = "Invalid email"; isValid = false; }
         require("password");
-        if(formData.password && formData.password.length < 6) {
-             newErrors.password = "Min 6 chars";
-             isValid = false;
-        }
+        if(formData.password && formData.password.length < 6) { newErrors.password = "Min 6 chars"; isValid = false; }
         require("mobileNumber");
         break;
-      case 5:
-        require("state");
-        require("city");
-        require("subCommunity");
-        break;
-      case 6:
-        require("maritalStatus");
-        require("height");
-        require("diet");
-        break;
-      case 7:
-        require("highestQualification");
-        require("college");
-        break;
-      case 8:
-        require("annualIncome");
-        require("workWith");
-        require("workAs");
-        require("companyName");
+      case 5: require("state"); require("city"); require("subCommunity"); break;
+      case 6: require("maritalStatus"); require("height"); require("diet"); break;
+      case 7: require("highestQualification"); require("college"); break;
+      case 8: require("annualIncome"); require("workWith"); require("workAs"); require("companyName"); break;
+      case 9:
+        if (sigRef.current.isEmpty()) { toast.error("Please sign to continue."); isValid = false; }
+        if (!termsAccepted) { toast.error("You must accept Terms & Conditions."); isValid = false; }
         break;
       default: break;
     }
-
     setErrors(newErrors);
     return isValid;
   };
 
   const nextStep = () => {
     if (validateStep(step)) {
+      setDirection('forward');
       setStep(step + 1);
-      window.scrollTo(0, 0); 
     }
   };
-
-  const prevStep = () => setStep(step - 1);
-
-  const getBackendWorkType = (frontendValue) => {
-    const map = {
-      'Private Company': 'Private',
-      'Government / PSU': 'Govt',
-      'Business / Self Employed': 'Business', 
-      'Defence': 'Govt',
-      'Not Working': 'Private' 
-    };
-    return map[frontendValue] || 'Private';
+  const prevStep = () => {
+    setDirection('back');
+    setStep(step - 1);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    if (!validateStep(8)) return;
-
+    e.preventDefault(); 
+    if (!validateStep(9)) return;
+    
     setLoading(true);
-    // Added a loading toast for better UX
-    const toastId = toast.loading("Creating your profile..."); 
+    const toastId = toast.loading("Creating Profile..."); 
 
     try {
       const dobDate = new Date(`${formData.dobYear}-${formData.dobMonth}-${formData.dobDay}`);
-      
-      const payload = {
-        ...formData,
-        dob: dobDate,
-        workType: getBackendWorkType(formData.workWith), 
-        jobRole: formData.workAs, 
-        collegeName: formData.college,
-        caste: formData.subCommunity,
-        height: parseInt(formData.height.match(/\d+/g)?.pop() || 0), 
-      };
+      const signatureDataURL = sigRef.current.toDataURL("image/png");
+      const signatureFile = dataURLtoFile(signatureDataURL, "signature.png");
 
-      if (refId) {
-        payload.referredByAgentId = refId;
-        payload.referralType = "link"; 
-      }
+      const data = new FormData();
+      data.append('firstName', formData.firstName);
+      data.append('lastName', formData.lastName);
+      data.append('email', formData.email);
+      data.append('password', formData.password);
+      data.append('mobileNumber', formData.mobileNumber);
+      data.append('profileFor', formData.profileFor);
+      data.append('gender', formData.gender);
+      data.append('dob', dobDate.toISOString());
+      data.append('religion', formData.religion);
+      data.append('community', formData.community);
+      data.append('country', formData.country);
+      data.append('state', formData.state);
+      data.append('city', formData.city);
+      if(formData.subCommunity) data.append('subCommunity', formData.subCommunity);
+      if(formData.subCommunity) data.append('caste', formData.subCommunity);
+      data.append('maritalStatus', formData.maritalStatus);
+      if(formData.diet) data.append('diet', formData.diet);
+      const heightVal = parseInt(formData.height ? formData.height.match(/\d+/g)?.pop() || 0 : 0);
+      data.append('height', heightVal);
+      if(formData.highestQualification) data.append('highestQualification', formData.highestQualification);
+      if(formData.college) data.append('collegeName', formData.college);
+
+      let backendWorkType = '';
+      if (formData.workWith === 'Private Company') backendWorkType = 'Private';
+      else if (formData.workWith === 'Government / PSU') backendWorkType = 'Govt';
+      else if (formData.workWith === 'Defence') backendWorkType = 'Govt';
+      else if (formData.workWith === 'Business / Self Employed') backendWorkType = 'Business';
       
-      if (refName) {
-        payload.referredByAgentName = refName;
+      if (backendWorkType) {
+        data.append('workType', backendWorkType);
       }
+      if(formData.workAs) data.append('jobRole', formData.workAs);
+      if(formData.companyName) data.append('companyName', formData.companyName);
+      if(formData.annualIncome) data.append('annualIncome', formData.annualIncome);
+      if (refId) { 
+          data.append('referredByAgentId', refId); 
+          data.append('referralType', "link"); 
+      }
+      if (refName) data.append('referredByAgentName', refName);
+      data.append('digitalSignature', signatureFile);
 
       const response = await fetch('https://kalyanashobha-back.vercel.app/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: data, 
       });
 
-      const data = await response.json();
-      
-      if (data.success) {
-        toast.success("Registration completed! Please login with your credentials.", { id: toastId });
-        
-        // Delaying navigation slightly so user can read the toast, 
-        // and passing email in state so the login screen can pre-fill it!
-        setTimeout(() => {
-            navigate('/login', { state: { savedEmail: formData.email } }); 
-        }, 1500);
-
-      } else {
-        toast.error(`Error: ${data.message}`, { id: toastId });
+      const resText = await response.text();
+      let resData;
+      try {
+        resData = JSON.parse(resText);
+      } catch (jsonError) {
+        console.error("Server HTML Error:", resText);
+        throw new Error(`Server Error (${response.status})`);
       }
+
+      if (!response.ok) throw new Error(resData.message || "Request failed");
+
+      if (resData.success) {
+        toast.success("Registration Successful!", { id: toastId });
+        setTimeout(() => { navigate('/login', { state: { savedEmail: formData.email } }); }, 1500);
+      } else {
+        throw new Error(resData.message || "Registration Failed");
+      }
+
     } catch (error) {
-      console.error("Registration Error:", error);
-      toast.error("Something went wrong. Please try again.", { id: toastId });
+      console.error("Submission Error:", error);
+      toast.error(error.message || "Connection Failed", { id: toastId });
     } finally {
       setLoading(false);
     }
   };
 
+  // --- RENDER STEPS ---
+  // Using 'key' on the step container triggers the animation when step changes
   const renderStep = () => {
+    // Dynamic animation class based on direction
+    const animClass = direction === 'forward' ? 'slide-in-right' : 'slide-in-left';
+
     switch(step) {
       case 1: 
         return (
-          <div className="step-container fade-in">
-            <h2 className="step-title">Welcome</h2>
-            <p className="step-subtitle">Let's set up the profile.</p>
-            <h3 className="section-label">This Profile is for</h3>
-            <div className="chip-grid">
-              {['Myself', 'My Son', 'My Daughter', 'My Brother', 'My Sister', 'My Friend'].map((opt) => (
-                <button 
-                    key={opt} 
-                    type="button" 
-                    className={`chip ${formData.profileFor === opt ? 'active' : ''}`} 
-                    onClick={() => selectOption('profileFor', opt)}
-                >
-                    {opt}
-                </button>
+          <div key={step} className={`step-container ${animClass}`}>
+            <h2 className="reg-title stagger-item">Create Account</h2>
+            <p className="reg-subtitle stagger-item">Let's start your journey to finding happiness.</p>
+            <h3 className="section-label stagger-item">Profile For</h3>
+            <div className="selection-grid stagger-item">
+              {['Myself', 'My Son', 'My Daughter', 'My Brother', 'My Sister', 'Friend'].map((opt) => (
+                <button key={opt} type="button" className={`selection-btn ${formData.profileFor === opt ? 'selected' : ''}`} onClick={() => selectOption('profileFor', opt)}>{opt}</button>
               ))}
             </div>
-            <h3 className="section-label mt-20">Gender</h3>
-            <div className="chip-grid two-col">
+            <h3 className="section-label stagger-item">Gender</h3>
+            <div className="selection-grid stagger-item">
               {['Male', 'Female'].map((gen) => (
-                <button 
-                    key={gen} 
-                    type="button" 
-                    className={`chip ${formData.gender === gen ? 'active' : ''}`} 
-                    onClick={() => selectOption('gender', gen)}
-                >
-                    {gen}
-                </button>
+                <button key={gen} type="button" className={`selection-btn ${formData.gender === gen ? 'selected' : ''}`} onClick={() => selectOption('gender', gen)}>{gen}</button>
               ))}
             </div>
           </div>
         );
-      case 2: 
-        return (
-          <div className="step-container fade-in">
-            <div className="step-icon"><Icons.User /></div>
-            <h2 className="step-title">Basic Details</h2>
-            <CustomInput label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} error={errors.firstName} placeholder="Enter First Name" />
-            <CustomInput label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} error={errors.lastName} placeholder="Enter Last Name" />
-            
-            <h3 className="section-label mt-20">Date of Birth</h3>
-            <div className={`dob-container ${errors.dobDay || errors.dobMonth || errors.dobYear ? 'has-error' : ''}`}>
-              <input type="number" name="dobDay" placeholder="DD" value={formData.dobDay} onChange={handleChange} className="dob-input" />
-              <input type="number" name="dobMonth" placeholder="MM" value={formData.dobMonth} onChange={handleChange} className="dob-input" />
-              <input type="number" name="dobYear" placeholder="YYYY" value={formData.dobYear} onChange={handleChange} className="dob-input full" />
+      case 2: return (
+          <div key={step} className={`step-container ${animClass}`}>
+            <h2 className="reg-title stagger-item">Basic Details</h2>
+            <CustomInput label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} error={errors.firstName} placeholder="First Name" />
+            <CustomInput label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} error={errors.lastName} placeholder="Last Name" />
+            <h3 className="section-label stagger-item">Date of Birth</h3>
+            <div className="dob-container stagger-item" style={{display:'flex', gap:'10px'}}>
+              <input type="number" name="dobDay" placeholder="DD" value={formData.dobDay} onChange={handleChange} style={{padding:'12px', width:'60px', borderRadius:'8px', border:'1px solid #E0E0E0'}} />
+              <input type="number" name="dobMonth" placeholder="MM" value={formData.dobMonth} onChange={handleChange} style={{padding:'12px', width:'60px', borderRadius:'8px', border:'1px solid #E0E0E0'}} />
+              <input type="number" name="dobYear" placeholder="YYYY" value={formData.dobYear} onChange={handleChange} style={{padding:'12px', flex:1, borderRadius:'8px', border:'1px solid #E0E0E0'}} />
             </div>
-            {(errors.dobDay || errors.dobMonth || errors.dobYear) && <span className="error-msg">Complete Date of Birth required</span>}
           </div>
         );
-      case 3: 
-        return (
-          <div className="step-container fade-in">
-            <div className="step-icon"><Icons.Location /></div>
-            <h2 className="step-title">Religion & Community</h2>
+      case 3: return (
+          <div key={step} className={`step-container ${animClass}`}>
+            <h2 className="reg-title stagger-item">Religion & Community</h2>
             <CustomSelect label="Religion" name="religion" value={formData.religion} onChange={handleChange} error={errors.religion} options={RELIGIONS} />
-            <CustomSelect label="Community / Mother Tongue" name="community" value={formData.community} onChange={handleChange} error={errors.community} options={COMMUNITIES} />
-            <CustomSelect label="Living in Country" name="country" value={formData.country} onChange={handleChange} error={errors.country} options={COUNTRIES} />
+            <CustomSelect label="Community" name="community" value={formData.community} onChange={handleChange} error={errors.community} options={COMMUNITIES} />
+            <CustomSelect label="Country" name="country" value={formData.country} onChange={handleChange} error={errors.country} options={COUNTRIES} />
           </div>
         );
-      case 4: 
-        return (
-          <div className="step-container fade-in">
-            <div className="step-icon"><Icons.Mail /></div>
-            <h2 className="step-title">Contact & Security</h2>
-            <div className="info-badge"><p>We do not share your contact details without your permission.</p></div>
-            
-            <CustomInput 
-               label="Email ID" 
-               name="email" 
-               type="email" 
-               value={formData.email} 
-               onChange={handleChange} 
-               error={errors.email} 
-               placeholder="name@example.com"
-               autoComplete="username" 
-            />
-            
-            {/* Custom Password Input with visibility toggle */}
-            <div className={`input-group ${errors.password ? 'has-error' : ''}`}>
+      case 4: return (
+          <div key={step} className={`step-container ${animClass}`}>
+            <h2 className="reg-title stagger-item">Contact & Security</h2>
+            <CustomInput label="Email ID" name="email" type="email" value={formData.email} onChange={handleChange} error={errors.email} placeholder="name@example.com" />
+            <div className={`input-group stagger-item ${errors.password ? 'has-error' : ''}`}>
               <label>Create Password</label>
               <div style={{ position: 'relative' }}>
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  name="password" 
-                  value={formData.password} 
-                  onChange={handleChange} 
-                  placeholder="Min. 6 characters"
-                  autoComplete="new-password"
-                  style={{ width: '100%', paddingRight: '40px', boxSizing: 'border-box' }}
-                />
-                <button 
-                  type="button" 
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}
-                >
-                  {showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
-                </button>
+                <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Min. 6 characters" style={{ width: '100%', paddingRight: '40px', boxSizing: 'border-box' }} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer' }}>{showPassword ? <Icons.EyeOff /> : <Icons.Eye />}</button>
               </div>
               {errors.password && <span className="error-msg">{errors.password}</span>}
             </div>
-            
-            <div className={`input-group ${errors.mobileNumber ? 'has-error' : ''}`}>
-              <label>Mobile Number</label>
-              <div className="mobile-input-wrapper">
-                <span className="country-code">+91</span>
-                <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} placeholder="98765 43210" />
-              </div>
-               {errors.mobileNumber && <span className="error-msg">{errors.mobileNumber}</span>}
-            </div>
+            <CustomInput label="Mobile Number" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} error={errors.mobileNumber} placeholder="9876543210" />
           </div>
         );
-      case 5: 
-      // ... [Keep Cases 5 through 8 exactly as they were in your code]
-        return (
-          <div className="step-container fade-in">
-             <div className="step-icon"><Icons.Location /></div>
-             <h2 className="step-title">Current Location</h2>
+      case 5: return (
+          <div key={step} className={`step-container ${animClass}`}>
+             <h2 className="reg-title stagger-item">Current Location</h2>
             <CustomSelect label="State" name="state" value={formData.state} onChange={handleChange} error={errors.state} options={STATES} />
             <CustomSelect label="City" name="city" value={formData.city} onChange={handleChange} error={errors.city} options={CITIES} />
-            <div className="divider"></div>
             <CustomSelect label="Sub-Community / Caste" name="subCommunity" value={formData.subCommunity} onChange={handleChange} error={errors.subCommunity} options={SUB_COMMUNITIES} />
           </div>
         );
-      case 6: 
-        return (
-          <div className="step-container fade-in">
-            <div className="step-icon"><Icons.Heart /></div>
-            <h2 className="step-title">Personal Details</h2>
+      case 6: return (
+          <div key={step} className={`step-container ${animClass}`}>
+            <h2 className="reg-title stagger-item">Personal Details</h2>
             <CustomSelect label="Marital Status" name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} error={errors.maritalStatus} options={['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce']} />
             <CustomSelect label="Height" name="height" value={formData.height} onChange={handleChange} error={errors.height} options={HEIGHTS} />
             <CustomSelect label="Diet" name="diet" value={formData.diet} onChange={handleChange} error={errors.diet} options={['Veg', 'Non-Veg', 'Eggetarian', 'Jain', 'Vegan']} />
           </div>
         );
-      case 7: 
-        return (
-          <div className="step-container fade-in">
-             <div className="step-icon"><Icons.Book /></div>
-             <h2 className="step-title">Education</h2>
-            <CustomInput label="Highest Qualification" name="highestQualification" value={formData.highestQualification} onChange={handleChange} error={errors.highestQualification} placeholder="e.g. B.Tech, MBA, MS" />
-            <CustomInput label="College / University" name="college" value={formData.college} onChange={handleChange} error={errors.college} placeholder="Enter College Name" />
+      case 7: return (
+          <div key={step} className={`step-container ${animClass}`}>
+             <h2 className="reg-title stagger-item">Education</h2>
+            <CustomInput label="Highest Qualification" name="highestQualification" value={formData.highestQualification} onChange={handleChange} error={errors.highestQualification} placeholder="e.g. B.Tech" />
+            <CustomInput label="College / University" name="college" value={formData.college} onChange={handleChange} error={errors.college} placeholder="College Name" />
           </div>
         );
-      case 8: 
-        return (
-          <div className="step-container fade-in">
-            <div className="step-icon"><Icons.Briefcase /></div>
-            <h2 className="step-title">Career & Lifestyle</h2>
+      case 8: return (
+          <div key={step} className={`step-container ${animClass}`}>
+            <h2 className="reg-title stagger-item">Career & Lifestyle</h2>
             <CustomSelect label="Annual Income" name="annualIncome" value={formData.annualIncome} onChange={handleChange} error={errors.annualIncome} options={INCOMES} />
             <CustomSelect label="Work Type" name="workWith" value={formData.workWith} onChange={handleChange} error={errors.workWith} options={['Private Company', 'Government / PSU', 'Business / Self Employed', 'Defence', 'Not Working']} />
             <CustomSelect label="Job Role" name="workAs" value={formData.workAs} onChange={handleChange} error={errors.workAs} options={PROFESSIONS} />
-            <CustomInput label="Current Company Name" name="companyName" value={formData.companyName} onChange={handleChange} error={errors.companyName} placeholder="Enter Company Name" />
+            <CustomInput label="Current Company" name="companyName" value={formData.companyName} onChange={handleChange} error={errors.companyName} placeholder="Company Name" />
           </div>
+        );
+      case 9:
+        return (
+            <div key={step} className={`step-container ${animClass}`}>
+                <h2 className="reg-title stagger-item">Identity Verification</h2>
+                <p className="stagger-item" style={{fontSize: '14px', color: '#666', marginBottom: '20px'}}>
+                    Please provide your digital signature to accept the Terms & Conditions.
+                </p>
+
+                {/* SIGNATURE ONLY */}
+                <h3 className="section-label stagger-item">Digital Signature</h3>
+                <div className="stagger-item" style={{ border: '2px dashed #ccc', borderRadius: '8px', overflow: 'hidden', background: '#f9f9f9', marginBottom: '10px' }}>
+                    <SignatureCanvas 
+                        ref={sigRef}
+                        penColor="black"
+                        canvasProps={{ width: 340, height: 160, className: 'sigCanvas' }}
+                        backgroundColor="#f9f9f9"
+                    />
+                </div>
+                <button className="stagger-item" type="button" onClick={clearSignature} style={{ fontSize: '12px', color: '#ff4444', background: 'none', border: 'none', cursor: 'pointer', marginBottom: '20px' }}>
+                    Clear Signature
+                </button>
+
+                <div className="stagger-item" style={{height: '1px', background: '#eee', margin: '20px 0'}}></div>
+
+                {/* CONSENT */}
+                <div className="stagger-item" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <input 
+                        type="checkbox" 
+                        id="terms" 
+                        checked={termsAccepted} 
+                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                        style={{ marginTop: '4px' }}
+                    />
+                    <label htmlFor="terms" style={{ fontSize: '13px', color: '#555', lineHeight: '1.4' }}>
+                        I declare that the information provided is true and I agree to the <b style={{color: '#D32F2F'}}>Terms & Conditions</b>.
+                    </label>
+                </div>
+            </div>
         );
       default: return null;
     }
@@ -427,25 +375,32 @@ const Register = () => {
   return (
     <>
       <Navbar/>
-      <Toaster position="top-center" reverseOrder={false} /> {/* Render Toasts here */}
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="app-container">
-        <div className="progress-container">
-          <div className="progress-fill" style={{ width: `${(step / 8) * 100}%` }}></div>
+        {/* Progress Header */}
+        <div className="progress-header">
+           <div className="step-indicator-text">STEP {step} OF 9</div>
+           <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${(step / 9) * 100}%` }}></div>
+           </div>
         </div>
+
         <div className="content-area">
-          {/* Changed this to proper onSubmit to allow browser password managers to hook in */}
-          <form onSubmit={step === 8 ? handleSubmit : (e) => { e.preventDefault(); nextStep(); }}>
+          <form onSubmit={step === 9 ? handleSubmit : (e) => { e.preventDefault(); nextStep(); }}>
             {renderStep()}
+            
             <div className="action-area">
               {step > 1 && (
                 <button type="button" className="back-btn" onClick={prevStep} disabled={loading}>Back</button>
               )}
-              {step === 8 ? (
-                 <button type="submit" className="continue-btn primary" disabled={loading}>
-                   {loading ? 'Registering...' : 'Complete Profile'}
+              {step === 9 ? (
+                 <button type="submit" className="btn-continue" disabled={loading}>
+                   {loading ? 'Registering...' : 'Complete Verification'} <Icons.ArrowRight />
                  </button>
               ) : (
-                 <button type="button" className="continue-btn primary" onClick={nextStep}>Continue</button>
+                 <button type="button" className="btn-continue" onClick={nextStep}>
+                   Continue <Icons.ArrowRight />
+                 </button>
               )}
             </div>
           </form>
