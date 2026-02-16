@@ -4,57 +4,59 @@ import { Link } from "react-router-dom";
 
 const HeroBanner = () => {
   return (
-    <div className="hero-section">
+    <div className="hb-container">
       
       {/* 1. TEXTURE & BACKGROUND */}
-      <div className="film-grain"></div>
+      <div className="hb-texture-grain"></div>
 
       {/* 2. MOVING STAR FIELD */}
-      <div className="star-field">
-        <div className="stars-small"></div>   {/* Distant White Stars */}
-        <div className="stars-medium"></div>  {/* Closer Gold Stars */}
+      <div className="hb-star-layer">
+        <div className="hb-stars-sm"></div>
+        <div className="hb-stars-md"></div>
       </div>
 
-      {/* 3. PHANTOM IMAGE */}
-      <div className="phantom-wrapper">
-        <img src="/banner1.png" alt="Luxury Matrimony" className="phantom-image" />
-        <div className="phantom-overlay"></div>
+      {/* 3. BACKGROUND IMAGE (RESPONSIVE SWITCHING) */}
+      <div className="hb-image-wrapper">
+        <picture>
+          {/* Mobile Image: Shows when screen is 900px or less */}
+          <source media="(max-width: 900px)" srcSet="/kalayanashobha11.png" />
+          
+          {/* Desktop Image: Default fallback */}
+          <img 
+            src="/kalyanashobha0.png" 
+            alt="Happy Telugu Couple" 
+            className="hb-background-img" 
+          />
+        </picture>
+        <div className="hb-overlay-gradient"></div>
       </div>
 
-      {/* 4. CONTENT LAYER - DIFFERENT TEXT STRUCTURE */}
-      <div className="hero-content">
-        
-        {/* Brand Tagline */}
-        <div className="brand-tag-container reveal-text delay-1">
+      {/* 4. CONTENT LAYER */}
+      <div className="hb-content">
 
-
-
-        </div>
-
-        {/* Main Title - Changed Text */}
-        <h1 className="hero-title">
-          <div className="text-mask">
-            <span className="reveal-text delay-2">Where Souls</span>
+        {/* Main Title */}
+        <h1 className="hb-title">
+          <div className="hb-text-mask">
+            <span className="hb-reveal hb-delay-1">Where Souls</span>
           </div>
-          <div className="text-mask">
-            <span className="reveal-text delay-3 gold-gradient">Meet Eternity</span>
+          <div className="hb-text-mask">
+            <span className="hb-reveal hb-delay-2 hb-gold-text">Meet Eternity</span>
           </div>
         </h1>
 
-        {/* Subtitle - Changed Text */}
-        <div className="text-mask subtitle-mask">
-          <p className="hero-subtitle reveal-text delay-4">
-            An exclusive journey for those seeking meaningful connections.<br className="desktop-break" />
+        {/* Subtitle */}
+        <div className="hb-text-mask">
+          <p className="hb-subtitle hb-reveal hb-delay-3">
+            An exclusive journey for those seeking meaningful connections.<br className="hb-desktop-break" />
             Discover a love that transcends time and tradition.
           </p>
         </div>
 
         {/* Action Button */}
-        <div className="action-wrapper reveal-anim delay-5">
-          <Link to="/registration">
-            <button className="magnetic-btn">
-              <span className="btn-text">Register Now</span>
-              <div className="btn-fill"></div>
+        <div className="hb-action-wrapper hb-fade-in hb-delay-4">
+          <Link to="/registration" style={{ textDecoration: 'none' }}>
+            <button className="hb-glass-btn">
+              <span className="hb-btn-label">Register Now</span>
             </button>
           </Link>
         </div>
