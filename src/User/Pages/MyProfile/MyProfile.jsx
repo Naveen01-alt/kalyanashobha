@@ -1,6 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import './MyProfile.css'; 
 import Navbar from "../../Components/Navbar.jsx";
+import toast, { Toaster } from 'react-hot-toast'; 
+import './MyProfile.css';
+
+// --- SKELETON LOADER ---
+const ProfileSkeleton = () => (
+  <div className="mp-container fade-in">
+    <div className="mp-profile-sheet skeleton-sheet">
+      <div className="mp-sheet-header">
+        <div className="skeleton-avatar shimmer"></div>
+        <div className="mp-header-text">
+          <div className="skeleton-line title shimmer"></div>
+          <div className="skeleton-line subtitle shimmer"></div>
+        </div>
+      </div>
+      <div className="mp-divider"></div>
+      <div className="mp-sheet-body">
+        {[1, 2].map((section) => (
+          <div key={section} className="mp-section-wrapper">
+            <div className="skeleton-line section-title shimmer"></div>
+            <div className="mp-details-grid">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="mp-data-field">
+                  <div className="skeleton-line label shimmer"></div>
+                  <div className="skeleton-line value shimmer"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const MyProfile = () => {
   const [user, setUser] = useState(null);
@@ -20,23 +52,17 @@ const MyProfile = () => {
       setLoading(false);
       return;
     }
-
     try {
       const res = await fetch(`${API_BASE}/my-profile`, {
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token 
-        }
+        headers: { 'Content-Type': 'application/json', 'Authorization': token }
       });
-      
       const data = await res.json();
-      
       if (data.success) {
         setUser(data.user);
         setFormData(data.user);
       }
     } catch (err) {
-      console.error("Profile Fetch Error:", err);
+      toast.error("Failed to load profile");
     } finally {
       setLoading(false);
     }
@@ -45,28 +71,25 @@ const MyProfile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    
+    const toastId = toast.loading("Updating profile...");
+
     try {
       const res = await fetch(`${API_BASE}/update-profile`, {
         method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token 
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': token },
         body: JSON.stringify(formData)
       });
-      
       const data = await res.json();
       
       if (data.success) {
         setUser(data.user);
         setIsEditing(false);
-        alert("Profile updated successfully");
+        toast.success("Profile updated successfully!", { id: toastId });
       } else {
-        alert("Update failed: " + (data.message || "Unknown error"));
+        toast.error(data.message || "Update failed", { id: toastId });
       }
     } catch (err) {
-      alert("Network error occurred");
+      toast.error("Network error occurred", { id: toastId });
     }
   };
 
@@ -77,250 +100,215 @@ const MyProfile = () => {
   const calculateAge = (dob) => {
     if (!dob) return "N/A";
     const birthDate = new Date(dob);
-    const ageDifMs = Date.now() - birthDate.getTime();
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+    return Math.abs(new Date(Date.now() - birthDate.getTime()).getUTCFullYear() - 1970);
   };
-
-  // Helper for Section Headings
-  const SectionHeader = ({ title }) => (
-    <div style={{ gridColumn: '1 / -1', marginTop: '20px', marginBottom: '10px' }}>
-      <h4 className="section-title">{title}</h4>
-    </div>
-  );
 
   return (
     <>
       <Navbar/>
+      <Toaster 
+        position="top-center" 
+        toastOptions={{
+          style: { fontFamily: "'Poppins', sans-serif", fontSize: '14px', color: '#1F2937' },
+          success: { iconTheme: { primary: '#059669', secondary: '#fff' } },
+          error: { iconTheme: { primary: '#D32F2F', secondary: '#fff' } }
+        }}
+      />
 
       {loading ? (
-        /* --- CORPORATE LOADING STATE --- */
-        <div className="loading-container">
-           <div className="spinner-box">
-             <div className="corporate-spinner"></div>
-           </div>
-           <p className="loading-text"> Processing...</p>
-        </div>
+        <ProfileSkeleton />
       ) : (
-        /* --- MAIN PROFILE CONTENT --- */
-        <div className="profile-container fade-in">
-          {/* Header */}
-          <div className="profile-header">
-            <h2>My Profile</h2>
-            {!isEditing && (
-              <button onClick={() => setIsEditing(true)} className="btn-edit">
-                Edit Details
-              </button>
-            )}
-          </div>
-
-          {/* Content Area */}
-          {!isEditing ? (
-            <div className="profile-content">
-              {/* Left Column: Avatar & Identity */}
-              <div className="profile-sidebar">
+        <div className="mp-container fade-in">
+          
+          <div className="mp-profile-sheet">
+            
+            {/* 1. Header Section */}
+            <div className="mp-sheet-header">
+              <div className="mp-avatar-group">
                 <img 
                   src={user?.photos?.[0] || "https://via.placeholder.com/150"} 
                   alt="Profile" 
-                  className="avatar-large" 
+                  className="mp-sheet-avatar" 
                 />
-                <h3 className="user-name">{user?.firstName} {user?.lastName}</h3>
-                <span className="user-id">ID: {user?.uniqueId || 'N/A'}</span>
                 
-                {/* Status Badges */}
-                <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
-                  {user?.isPaidMember && (
-                    <span className="status-badge success" style={{ fontSize: '11px' }}>Premium Member</span>
-                  )}
-                  {user?.isEmailVerified && (
-                    <span className="status-badge approved" style={{ fontSize: '11px' }}>Verified Email</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Right Column: Grid Details */}
-              <div className="profile-details">
-                
-                {/* 1. Basic Information */}
-                <SectionHeader title="Basic Information" />
-                <div className="detail-group">
-                  <label>Age / DOB</label>
-                  <div>{calculateAge(user?.dob)} Years ({new Date(user?.dob).toLocaleDateString()})</div>
-                </div>
-                <div className="detail-group">
-                  <label>Gender</label>
-                  <div>{user?.gender || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Height</label>
-                  <div>{user?.height} cm</div>
-                </div>
-                <div className="detail-group">
-                  <label>Marital Status</label>
-                  <div>{user?.maritalStatus || "N/A"}</div>
-                </div>
-
-                {/* 2. Cultural & Religious */}
-                <SectionHeader title="Cultural Background" />
-                <div className="detail-group">
-                  <label>Religion</label>
-                  <div>{user?.religion || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Community</label>
-                  <div>{user?.community || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Caste / Sub-Community</label>
-                  <div>{user?.caste} {user?.subCommunity && `(${user?.subCommunity})`}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Diet</label>
-                  <div>{user?.diet || "N/A"}</div>
-                </div>
-
-                {/* 3. Education & Career */}
-                <SectionHeader title="Education & Career" />
-                <div className="detail-group">
-                  <label>Highest Qualification</label>
-                  <div>{user?.highestQualification || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>College Name</label>
-                  <div>{user?.collegeName || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Work Type</label>
-                  <div>{user?.workType || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Job Role</label>
-                  <div>{user?.jobRole || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Company</label>
-                  <div>{user?.companyName || "N/A"}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Annual Income</label>
-                  <div>{user?.annualIncome || "N/A"}</div>
-                </div>
-
-                {/* 4. Location & Contact */}
-                <SectionHeader title="Location & Contact" />
-                <div className="detail-group">
-                  <label>Current Location</label>
-                  <div>{user?.city}, {user?.state}, {user?.country}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Email</label>
-                  <div style={{ wordBreak: 'break-all' }}>{user?.email}</div>
-                </div>
-                <div className="detail-group">
-                  <label>Mobile</label>
-                  <div>{user?.mobileNumber}</div>
-                </div>
-
-                {/* 5. About */}
-                <SectionHeader title="About Me" />
-                <div className="detail-group" style={{ gridColumn: '1 / -1' }}>
-                  <div style={{ lineHeight: '1.6', color: '#4f566b', fontSize: '14px' }}>
-                    {user?.aboutMe || "No description provided."}
+                {/* Green Tick Icon (Only visual indicator of verification) */}
+                {user?.isPaidMember && (
+                  <div className="mp-verified-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
                   </div>
+                )}
+              </div>
+              
+              <div className="mp-header-text">
+                <div className="mp-title-row">
+                  <h1 className="mp-sheet-name">{user?.firstName} {user?.lastName}</h1>
+                  {!isEditing && (
+                    <button onClick={() => setIsEditing(true)} className="mp-icon-btn" title="Edit Profile">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </button>
+                  )}
                 </div>
+                
+                <div className="mp-meta-info">
+                  <span className="mp-meta-item">ID: {user?.uniqueId || 'N/A'}</span>
+                  {/* Pending/Verified Text Status removed completely as requested */}
+                </div>
+                
+                {/* About Me Section Removed */}
               </div>
             </div>
-          ) : (
-            /* --- EDIT MODE FORM --- */
-            <form onSubmit={handleUpdate} className="profile-form">
-              <SectionHeader title="Edit Basic Details" />
-              <div className="form-group">
-                <label>Marital Status</label>
-                <select name="maritalStatus" value={formData.maritalStatus || ''} onChange={handleChange}>
-                  <option value="Never Married">Never Married</option>
-                  <option value="Divorced">Divorced</option>
-                  <option value="Widowed">Widowed</option>
-                  <option value="Awaiting Divorce">Awaiting Divorce</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Height (cm)</label>
-                <input name="height" type="number" value={formData.height || ''} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Diet</label>
-                <select name="diet" value={formData.diet || ''} onChange={handleChange}>
-                  <option value="Veg">Veg</option>
-                  <option value="Non-Veg">Non-Veg</option>
-                  <option value="Eggetarian">Eggetarian</option>
-                </select>
-              </div>
 
-              <SectionHeader title="Edit Education & Career" />
-              <div className="form-group">
-                <label>Highest Qualification</label>
-                <input name="highestQualification" value={formData.highestQualification || ''} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>College Name</label>
-                <input name="collegeName" value={formData.collegeName || ''} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Work Type</label>
-                <select name="workType" value={formData.workType || ''} onChange={handleChange}>
-                  <option value="Private">Private</option>
-                  <option value="Government">Government</option>
-                  <option value="Business">Business</option>
-                  <option value="Self Employed">Self Employed</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Job Role</label>
-                <input name="jobRole" value={formData.jobRole || ''} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Company Name</label>
-                <input name="companyName" value={formData.companyName || ''} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Annual Income</label>
-                <input name="annualIncome" value={formData.annualIncome || ''} onChange={handleChange} />
-              </div>
+            <div className="mp-divider"></div>
 
-              <SectionHeader title="Edit Location" />
-              <div className="form-group">
-                <label>City</label>
-                <input name="city" value={formData.city || ''} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>State</label>
-                <input name="state" value={formData.state || ''} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Country</label>
-                <input name="country" value={formData.country || ''} onChange={handleChange} />
-              </div>
+            {/* 2. Body Section */}
+            <div className="mp-sheet-body">
+              {!isEditing ? (
+                /* --- VIEW MODE --- */
+                <>
+                  <div className="mp-section-wrapper">
+                    <h3 className="mp-sheet-heading">Basic Information</h3>
+                    <div className="mp-details-grid">
+                      <div className="mp-data-field">
+                        <label>Age / DOB</label>
+                        <p>{calculateAge(user?.dob)} Years <span className="text-muted">({new Date(user?.dob).toLocaleDateString()})</span></p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Gender</label>
+                        <p>{user?.gender || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Height</label>
+                        <p>{user?.height ? `${user.height} cm` : "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Marital Status</label>
+                        <p>{user?.maritalStatus || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Religion</label>
+                        <p>{user?.religion || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Community</label>
+                        <p>{user?.community || "-"}</p>
+                      </div>
+                    </div>
+                  </div>
 
-              <SectionHeader title="About Me" />
-              <div className="form-group full-width">
-                <textarea 
-                  name="aboutMe" 
-                  value={formData.aboutMe || ''} 
-                  onChange={handleChange} 
-                  rows="4"
-                ></textarea>
-              </div>
+                  <div className="mp-divider-subtle"></div>
 
-              <div className="form-actions">
-                <button type="button" onClick={() => setIsEditing(false)} className="btn-cancel">
-                  Cancel
-                </button>
-                <button type="submit" className="btn-save">
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          )}
+                  <div className="mp-section-wrapper">
+                    <h3 className="mp-sheet-heading">Professional & Education</h3>
+                    <div className="mp-details-grid">
+                      <div className="mp-data-field">
+                        <label>Qualification</label>
+                        <p>{user?.highestQualification || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>College</label>
+                        <p>{user?.collegeName || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Job Role</label>
+                        <p>{user?.jobRole || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Company</label>
+                        <p>{user?.companyName || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Annual Income</label>
+                        <p>{user?.annualIncome || "-"}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Work Type</label>
+                        <p>{user?.workType || "-"}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mp-divider-subtle"></div>
+
+                  <div className="mp-section-wrapper">
+                    <h3 className="mp-sheet-heading">Contact Details</h3>
+                    <div className="mp-details-grid">
+                      <div className="mp-data-field">
+                        <label>Email</label>
+                        <p>{user?.email}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Phone</label>
+                        <p>{user?.mobileNumber}</p>
+                      </div>
+                      <div className="mp-data-field">
+                        <label>Location</label>
+                        <p>{user?.city}, {user?.state}, {user?.country}</p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* --- EDIT FORM --- */
+                <form onSubmit={handleUpdate} className="mp-edit-container">
+                  
+                  <div className="mp-section-wrapper">
+                    <h3 className="mp-sheet-heading">Edit Personal Details</h3>
+                    <div className="mp-edit-grid">
+                      <div className="mp-input-wrap">
+                        <label>Marital Status</label>
+                        <select name="maritalStatus" value={formData.maritalStatus || ''} onChange={handleChange}>
+                          <option value="Never Married">Never Married</option>
+                          <option value="Divorced">Divorced</option>
+                          <option value="Widowed">Widowed</option>
+                        </select>
+                      </div>
+                      <div className="mp-input-wrap">
+                        <label>Height (cm)</label>
+                        <input name="height" type="number" value={formData.height || ''} onChange={handleChange} />
+                      </div>
+                      <div className="mp-input-wrap">
+                        <label>Diet</label>
+                        <select name="diet" value={formData.diet || ''} onChange={handleChange}>
+                          <option value="Veg">Veg</option>
+                          <option value="Non-Veg">Non-Veg</option>
+                          <option value="Eggetarian">Eggetarian</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mp-section-wrapper">
+                    <h3 className="mp-sheet-heading">Edit Professional</h3>
+                    <div className="mp-edit-grid">
+                      <div className="mp-input-wrap">
+                        <label>Qualification</label>
+                        <input name="highestQualification" value={formData.highestQualification || ''} onChange={handleChange} />
+                      </div>
+                      <div className="mp-input-wrap">
+                        <label>College</label>
+                        <input name="collegeName" value={formData.collegeName || ''} onChange={handleChange} />
+                      </div>
+                      <div className="mp-input-wrap">
+                        <label>Job Role</label>
+                        <input name="jobRole" value={formData.jobRole || ''} onChange={handleChange} />
+                      </div>
+                      <div className="mp-input-wrap">
+                        <label>Income</label>
+                        <input name="annualIncome" value={formData.annualIncome || ''} onChange={handleChange} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mp-sheet-actions">
+                    <button type="button" onClick={() => setIsEditing(false)} className="mp-btn-text">Cancel</button>
+                    <button type="submit" className="mp-btn-solid">Save Changes</button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </>
