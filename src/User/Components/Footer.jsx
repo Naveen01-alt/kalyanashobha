@@ -11,9 +11,7 @@ const Footer = () => {
         
         {/* COLUMN 1: Brand & About */}
         <div className="ks-footer-col brand-col">
-          <div className="ks-footer-logo">
-            KalyanaShobha
-          </div>
+        
           <p className="ks-footer-desc">
             Bringing hearts together with trust and tradition. 
             The most secure way to find your perfect life partner.
@@ -24,8 +22,8 @@ const Footer = () => {
         <div className="ks-footer-col">
           <h4 className="ks-footer-heading">Explore</h4>
           <ul className="ks-footer-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#success-stories">Success Stories</a></li>
+            <li><a href="#home">About us</a></li>
+
             <li><a href="#contact">Contact Us</a></li>
           </ul>
         </div>
@@ -44,8 +42,8 @@ const Footer = () => {
         {/* COLUMN 4: Get in Touch */}
         <div className="ks-footer-col contact-col">
           <h4 className="ks-footer-heading">Contact</h4>
-          <p className="ks-contact-item">support@kalyanashobha.com</p>
-          <p className="ks-contact-item">+91 98765 43210</p>
+          <p className="ks-contact-item">support@kalyanashobha.in</p>
+
           
                   {/*<div className="ks-social-icons">
             <a href="#" className="ks-social-btn">FB</a>
