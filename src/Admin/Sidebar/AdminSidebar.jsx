@@ -119,6 +119,12 @@ export default function AdminSidebar() {
               <span>Vendors</span>
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/admin/user-certificates" className={({ isActive }) => (isActive ? "ks-nav-link active" : "ks-nav-link")}>
+              <Store size={20} />
+              <span>User Acceptance</span>
+            </NavLink>
+          </li>
 
         </ul>
       </nav>
