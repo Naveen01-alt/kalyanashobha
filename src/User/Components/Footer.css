@@ -1,35 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Mulish:wght@300;400;600&display=swap');
+/* --- VARIABLES & SETUP --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --footer-bg: #1A1A1A;
-  --footer-text: #E0E0E0;
-  --footer-gold: #C5A059;
-  --footer-heading: #FFFFFF;
+  /* Brand Consistency */
+  --ks-primary: #D32F2F;        /* Brand Red */
+  --ks-accent: #FFCA28;         /* Brand Amber */
+  
+  /* Footer Specific Colors (Dark Corporate Theme) */
+  --footer-bg: #111827;         /* Deep Charcoal/Black */
+  --footer-text-head: #FFFFFF;  /* White Headings */
+  --footer-text-body: #9CA3AF;  /* Muted Gray Text */
+  --footer-border: #1F2937;     /* Dark Border */
 }
 
+/* --- MAIN SECTION --- */
 .ks-footer-section {
   background-color: var(--footer-bg);
-  color: var(--footer-text);
-  font-family: 'Mulish', sans-serif;
+  color: var(--footer-text-body);
+  font-family: 'Poppins', sans-serif;
   position: relative;
-  padding-top: 60px;
+  width: 100%;
 }
 
+/* Decorative Gold/Red Line at Top */
 .ks-footer-gold-line {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, var(--footer-gold), #F2EFE8, var(--footer-gold));
+  background: linear-gradient(90deg, var(--ks-primary) 0%, var(--ks-accent) 100%);
+  box-shadow: 0 0 10px rgba(255, 202, 40, 0.2);
 }
 
+/* --- CONTAINER & GRID --- */
 .ks-footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px 60px;
+  padding: 80px 24px 60px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr; /* Brand col is wider */
   gap: 40px;
 }
 
@@ -37,47 +44,38 @@
 .ks-footer-col {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Default to Left for Desktop too */
-  text-align: left;
+  gap: 20px;
 }
 
-/* Brand Column */
+/* Brand Column Specifics */
 .ks-footer-logo {
-  font-family: 'Merriweather', serif;
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--footer-gold);
-  margin-bottom: 20px;
+  color: var(--footer-text-head);
+  letter-spacing: -0.5px;
+  /* Optional: Make the 'K' or part of logo colored if text-only */
+  background: linear-gradient(90deg, var(--ks-primary), var(--ks-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* Fallback color if gradient fails or for "Shobha" part differentiation if needed */
+  /* color: var(--ks-primary); */ 
 }
 
 .ks-footer-desc {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.6;
-  color: #B0B0B0;
   max-width: 300px;
-  margin: 0; /* Reset margins */
+  color: var(--footer-text-body);
 }
 
 /* Headings */
 .ks-footer-heading {
-  font-family: 'Merriweather', serif;
-  font-size: 1.1rem;
-  color: var(--footer-heading);
-  margin-bottom: 25px;
-  position: relative;
-  padding-bottom: 10px;
-  width: 100%;
-  text-align: left;
-}
-
-.ks-footer-heading::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0; /* Anchors line strictly to left */
-  width: 40px;
-  height: 2px;
-  background-color: var(--footer-gold);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--footer-text-head);
+  margin-bottom: 8px; /* Spacing handled by flex-gap, but this adds extra visual anchor */
 }
 
 /* Links List */
@@ -85,119 +83,110 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 100%;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.ks-footer-links li {
-  margin-bottom: 12px;
-}
-
-.ks-footer-links a {
+.ks-footer-links li a {
   text-decoration: none;
-  color: #B0B0B0;
-  transition: color 0.3s ease, padding-left 0.3s ease;
-  font-size: 0.95rem;
-  display: block;
+  color: var(--footer-text-body);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
 }
 
-.ks-footer-links a:hover {
-  color: var(--footer-gold);
-  padding-left: 5px;
+/* Hover Effect: Slide right & Change color */
+.ks-footer-links li a:hover {
+  color: var(--ks-accent);
+  transform: translateX(4px);
 }
 
-/* Contact Items */
+/* Contact Details */
 .ks-contact-item {
-  margin-bottom: 15px;
-  font-size: 0.95rem;
-  color: #B0B0B0;
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--footer-text-body);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* Social Icons */
+.ks-contact-item:hover {
+  color: var(--ks-accent);
+}
+
+/* Social Icons (Placeholder styles matching your comment) */
 .ks-social-icons {
   display: flex;
-  gap: 15px;
-  margin-top: 20px;
-  justify-content: flex-start; /* Force Left Alignment */
+  gap: 12px;
+  margin-top: 10px;
 }
 
 .ks-social-btn {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
+  background: rgba(255,255,255,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--footer-text);
+  color: var(--footer-text-head);
   text-decoration: none;
   font-size: 0.8rem;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .ks-social-btn:hover {
-  background-color: var(--footer-gold);
-  border-color: var(--footer-gold);
-  color: #1A1A1A;
-  transform: translateY(-3px);
+  background: var(--ks-primary);
+  color: white;
+  transform: translateY(-2px);
 }
 
-/* --- BOTTOM COPYRIGHT --- */
+/* --- COPYRIGHT AREA --- */
 .ks-footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--footer-border);
+  padding: 30px 24px;
   text-align: center;
-  padding: 25px 20px;
-  background-color: #151515;
+  margin-top: 20px;
 }
 
 .ks-footer-bottom p {
   font-size: 0.85rem;
-  color: #777;
+  color: rgba(156, 163, 175, 0.6); /* Dimmed gray */
   margin: 0;
 }
 
-/* --- RESPONSIVE BREAKPOINTS --- */
-@media (max-width: 992px) {
+/* --- RESPONSIVE DESIGN --- */
+
+/* Tablet (Stack into 2 rows of 2 cols) */
+@media (max-width: 900px) {
   .ks-footer-container {
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: 50px 30px;
   }
 }
 
-@media (max-width: 576px) {
+/* Mobile (Stack vertically) */
+@media (max-width: 600px) {
   .ks-footer-container {
-    grid-template-columns: 1fr; /* Stack vertically */
-    padding-bottom: 40px;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 60px 24px 40px;
+    text-align: center; /* Center align for mobile usually looks cleaner */
   }
 
   .ks-footer-col {
-    align-items: flex-start !important; /* Force Left Align */
-    text-align: left !important;
-    width: 100%;
-  }
-  
-  /* Ensure headings and their underlines stay left */
-  .ks-footer-heading {
-    text-align: left !important;
-  }
-  
-  .ks-footer-heading::after {
-    left: 0 !important;
-    right: auto !important;
-    margin: 0 !important;
-  }
-  
-  /* Logo left align */
-  .ks-footer-logo {
-    text-align: left !important;
-    width: 100%;
+    align-items: center; /* Center flex items */
   }
 
-  /* Social Icons left align */
-  .ks-social-icons {
-    justify-content: flex-start !important;
+  .ks-footer-links li a:hover {
+    transform: none; /* Disable slide on touch */
+  }
+  
+  .ks-footer-desc {
+    margin: 0 auto;
   }
 }
