@@ -1,205 +1,247 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* --- 1. VARIABLES & RESET --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --ks-primary: #111111;       /* Deep Charcoal */
-  --ks-accent: #C5A059;        /* Gold */
-  --ks-bg: #FDFBF7;            /* Cream Background */
-  --ks-surface: #FFFFFF;
-  --ks-border: #E5E7EB;
-  --ks-text-main: #1F2937;
-  --ks-text-muted: #6B7280;
-  --font-main: 'Inter', sans-serif;
+  /* Core Brand Colors */
+  --vp-red: #D32F2F;        /* Brand Red */
+  --vp-amber: #FFCA28;      /* Brand Amber */
+  --vp-gold-text: #B7791F;  /* Dark Gold text */
+  
+  /* UI Colors */
+  --vp-bg: #FFFFFF;
+  --vp-card-bg: #FFFFFF;
+  --vp-text-main: #111827;
+  --vp-text-sub: #6B7280;
+  --vp-border: #E5E7EB;
+  
+  /* Effects */
+  --vp-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --vp-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --vp-radius: 12px;
+  --vp-transition: all 0.3s ease-in-out;
 }
 
-/* Page Layout */
-.vendor-page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  background-color: var(--ks-bg);
-  min-height: 90vh;
-  font-family: var(--font-main);
+/* --- 2. LAYOUT CONTAINER --- */
+.v-premium-container {
+  max-width: 1200px;        
+  width: 100%;
+  margin: 100px auto 60px;  /* Top margin clears Navbar */
+  padding: 25px 24px !important;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  color: var(--vp-text-main);
+  background-color: var(--vp-bg);
+  display: block;           /* Ensures it behaves as a block */
 }
 
-.page-header {
-  margin-bottom: 40px;
-  text-align: center;
+/* --- 3. HEADER (Renamed & Fixed) --- */
+.v-premium-header {
+  display: flex;            
+  flex-direction: column;   /* FORCE VERTICAL STACK */
+  align-items: center;      /* Center Horizontally */
+  justify-content: center;  
+  text-align: center;       /* Text Center */
+  margin-bottom: 50px;
+  width: 100%;
+  clear: both;              /* Clears any floats */
 }
 
-.page-header h1 {
-  font-size: 32px;
-  color: var(--ks-primary);
-  margin-bottom: 8px;
+.v-premium-header h1 {
+  font-size: 2.2rem;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  color: black;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 12px 0;
+  position: relative;
+  display: inline-block;
+  line-height: 1.2;
 }
 
-.page-header p {
-  color: var(--ks-text-muted);
-  font-size: 16px;
+/* Decorative Underline */
+.v-premium-header h1::after {
+  content: '';
+  display: block;
+  width: 70px;
+  height: 4px;
+  background: var(--vp-amber);
+  margin: 10px auto 0;      /* Auto margin centers it */
+  border-radius: 2px;
 }
 
-/* Grid Layout */
-.vendor-grid {
+.v-premium-header p {
+  font-size: 1.1rem;
+  color: var(--vp-text-sub);
+  max-width: 600px;
+  margin: 0 auto;           /* Center the paragraph itself */
+  line-height: 1.6;
+}
+
+/* --- 4. GRID SYSTEM --- */
+.v-premium-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
+  gap: 32px;
+  width: 100%;
 }
 
-/* Card Styling */
-.vendor-card {
-  background: var(--ks-surface);
-  border: 1px solid var(--ks-border);
-  border-radius: 12px;
+.v-no-data {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px;
+  border: 2px dashed var(--vp-border);
+  border-radius: var(--vp-radius);
+  color: var(--vp-text-sub);
+}
+
+/* --- 5. CARD DESIGN --- */
+.v-premium-card {
+  background: var(--vp-card-bg);
+  border: 1px solid var(--vp-border);
+  border-radius: var(--vp-radius);
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: var(--vp-transition);
   display: flex;
   flex-direction: column;
+  position: relative;
+  height: 100%; 
 }
 
-.vendor-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.1);
-  border-color: rgba(197, 160, 89, 0.3); /* Subtle Gold Border on hover */
+.v-premium-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--vp-hover-shadow);
+  border-color: var(--vp-amber); 
 }
 
 /* Image Area */
-.vendor-image-wrapper {
-  height: 200px;
+.v-card-image {
+  height: 220px;
   width: 100%;
   position: relative;
-  background-color: #f3f4f6;
   overflow: hidden;
+  background: #f9fafb;
 }
 
-.vendor-image-wrapper img {
+.v-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease;
 }
 
-.vendor-card:hover .vendor-image-wrapper img {
-  transform: scale(1.05);
+.v-premium-card:hover .v-card-image img {
+  transform: scale(1.08); 
 }
 
-.placeholder-img {
+.v-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9CA3AF;
-  background-color: #F3F4F6;
+  color: var(--vp-text-sub);
 }
 
 /* Category Badge */
-.category-badge {
+.v-badge-category {
   position: absolute;
   top: 12px;
   right: 12px;
-  background-color: rgba(255, 255, 255, 0.95);
-  color: var(--ks-primary);
+  background: var(--vp-amber);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 700;
   padding: 6px 12px;
   border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  z-index: 10;
 }
 
 /* Content Area */
-.vendor-content {
-  padding: 20px;
+.v-card-content {
+  padding: 24px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
 }
 
-.vendor-title {
-  font-size: 18px;
+.v-card-title {
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--ks-text-main);
-  margin: 0 0 8px 0;
+  color: var(--vp-text-main);
+  margin: 0 0 10px 0;
+  line-height: 1.3;
 }
 
-.vendor-desc {
-  font-size: 14px;
-  color: var(--ks-text-muted);
-  line-height: 1.5;
+.v-card-desc {
+  font-size: 0.95rem;
+  color: var(--vp-text-sub);
   margin-bottom: 20px;
+  line-height: 1.6;
   flex-grow: 1;
 }
 
-.vendor-details {
+/* Details Row */
+.v-card-details {
+  padding-top: 16px;
+  border-top: 1px solid var(--vp-border);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding-top: 15px;
-  border-top: 1px solid #F3F4F6;
+  gap: 12px;
+  margin-top: auto;
 }
 
-.detail-item {
+.v-detail-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--ks-text-main);
+  gap: 12px;
+  font-size: 0.9rem;
   font-weight: 500;
+  color: var(--vp-text-main);
 }
 
-.icon-gold {
-  color: var(--ks-accent);
+.v-icon-gold {
+  color: var(--vp-gold-text);
+  min-width: 18px;
 }
 
-/* Button */
-.contact-vendor-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--ks-primary);
-  color: white;
+/* --- 6. SKELETON --- */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.v-skeleton {
+  height: 420px;
+  background: #f6f7f8;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 200% 100%; 
+  animation: shimmer 1.5s infinite linear;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-family: var(--font-main);
 }
 
-.contact-vendor-btn:hover {
-  background-color: #333;
-}
-
-/* Loading & Empty States */
-.no-data-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px;
-  color: var(--ks-text-muted);
-}
-
-.skeleton-card {
-  height: 380px;
-  background-color: #f0f0f0;
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
-}
-
-/* Mobile Responsive */
+/* --- 7. RESPONSIVE --- */
 @media (max-width: 768px) {
-  .vendor-grid {
-    grid-template-columns: 1fr;
+  .v-premium-container {
+    padding: 0 16px;
+    margin-top: 80px;
   }
-  .page-header h1 {
-    font-size: 24px;
+  
+  .v-premium-header h1 {
+    margin-top:15px;
+    font-size: 1.2rem;
   }
+
+  .v-premium-grid {
+    grid-template-columns: 1fr; 
+  }
+  .v-premium-header p {
+  font-size: 0.7rem;
+  color: var(--vp-text-sub);
+  max-width: 600px;
+  margin: 0 auto;           /* Center the paragraph itself */
+  line-height: 1.6;
+}
 }
