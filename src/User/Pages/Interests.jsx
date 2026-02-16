@@ -1,163 +1,120 @@
 import React, { useState, useEffect } from 'react';
-import './Interests.css';
+import toast, { Toaster } from 'react-hot-toast';
 import Navbar from "../Components/Navbar.jsx";
+import './Interests.css';
 
 const Interests = () => {
-  const [activeTab, setActiveTab] = useState('received'); 
+  const [activeTab, setActiveTab] = useState('received'); // received | sent | accepted
   const [sentList, setSentList] = useState([]);
   const [receivedList, setReceivedList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  // Default Avatar URL (Generic User)
-  const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
+  // Neutral Gender Avatar
+  const neutralAvatar = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; 
   const API_BASE = "https://kalyanashobha-back.vercel.app/api/user";
 
   useEffect(() => {
     fetchInterests();
   }, []);
 
-  const fetchInterests = async () => {
+  const fetchInterests = async (isBackground = false) => {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+      toast.error("Please login to view connections");
+      return;
+    }
 
-    setLoading(true);
-    setError('');
-    
+    if (!isBackground) setLoading(true);
+
     try {
-      const resSent = await fetch(`${API_BASE}/interests/sent`, { 
-        headers: { 'Content-Type': 'application/json', 'Authorization': token } 
-      });
-      const dataSent = await resSent.json();
-      if (dataSent.success) setSentList(dataSent.data || []);
+      const [resSent, resRec] = await Promise.all([
+        fetch(`${API_BASE}/interests/sent`, { 
+          headers: { 'Content-Type': 'application/json', 'Authorization': token } 
+        }),
+        fetch(`${API_BASE}/interests/received`, { 
+          headers: { 'Content-Type': 'application/json', 'Authorization': token } 
+        })
+      ]);
 
-      const resRec = await fetch(`${API_BASE}/interests/received`, { 
-        headers: { 'Content-Type': 'application/json', 'Authorization': token } 
-      });
+      const dataSent = await resSent.json();
       const dataRec = await resRec.json();
+
+      if (dataSent.success) setSentList(dataSent.data || []);
       if (dataRec.success) setReceivedList(dataRec.data || []);
 
     } catch (err) {
       console.error("Error fetching interests:", err);
-      setError("Failed to load connections.");
+      if (!isBackground) toast.error("Could not load data");
     } finally {
       setLoading(false);
     }
   };
 
   const handleRespond = async (interestId, action) => {
+    // Custom Toast with Confirmation
+    toast((t) => (
+      <div className="toast-confirm">
+        <span>{action === 'accept' ? 'Accept' : 'Decline'} this request?</span>
+        <div className="toast-actions">
+          <button 
+            className="toast-btn confirm"
+            onClick={() => performAction(interestId, action, t.id)}
+          >
+            Yes
+          </button>
+          <button 
+            className="toast-btn cancel"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+        </div>
+      </div>
+    ), { duration: 4000, position: 'top-center' });
+  };
+
+  const performAction = async (interestId, action, toastId) => {
+    toast.dismiss(toastId);
+    const loadingToast = toast.loading("Processing...");
     const token = localStorage.getItem('token');
-    if(!window.confirm(`Are you sure you want to ${action} this request?`)) return;
 
     try {
       const res = await fetch(`${API_BASE}/interest/respond`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': token },
-        body: JSON.stringify({ interestId: interestId, action: action })
+        body: JSON.stringify({ interestId, action })
       });
-      
+
       const data = await res.json();
+      
       if (data.success) {
-        alert("Success!");
-        fetchInterests(); 
+        toast.success(`Request ${action}ed successfully!`, { id: loadingToast });
+        fetchInterests(true); // Background refresh
       } else {
-        alert("Action failed: " + (data.message || "Unknown error"));
+        toast.error(data.message || "Action failed", { id: loadingToast });
       }
     } catch (err) {
-      console.error(err);
-      alert("Network error.");
+      toast.error("Network error", { id: loadingToast });
     }
   };
 
-  // --- RENDER: 1. ACCEPTED CONTACTS (Premium Style) ---
-  const renderAccepted = () => {
-    const acceptedSent = sentList.filter(i => i.status === 'Accepted');
-    const acceptedRec = receivedList.filter(i => i.status === 'Accepted');
-    const allAccepted = [...acceptedSent, ...acceptedRec];
+  // --- RENDER HELPERS ---
 
-    if (allAccepted.length === 0) return <div className="empty-state">No connected profiles yet.</div>;
-
+  const renderSkeleton = () => {
     return (
-      <div className="card-grid">
-        {allAccepted.map((item) => {
-          const isSender = sentList.some(s => s._id === item._id);
-          const profile = isSender ? item.receiverProfile : item.senderId;
-
-          return (
-            <div className="interest-card accepted-card" key={item._id}>
-              <div className="premium-header">
-                {/* Default Avatar Used Here */}
-                <img src={defaultAvatar} alt="Profile" className="premium-avatar" />
-                
-                <div className="status-badge-premium mt-2">
-                  <span className="dot"></span> Connected
-                </div>
-                <h4>{profile?.firstName || profile?.name} {profile?.lastName}</h4>
-                <div className="gold-divider"></div>
-              </div>
-              
-              <div className="premium-details">
-                <div className="detail-row">
-                  <span className="detail-label">Profile ID</span>
-                  <span className="detail-value">{profile?.uniqueId || profile?.uniqueid || "N/A"}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Mobile</span>
-                  <span className="detail-value highlight">{profile?.mobileNumber || profile?.mobile || "N/A"}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Email</span>
-                  <span className="detail-value email-text">{profile?.email || "N/A"}</span>
-                </div>
+      <div className="ic-grid">
+        {[1, 2, 3, 4, 5, 6].map((n) => (
+          <div key={n} className="ic-card skeleton-card">
+            <div className="sk-header">
+              <div className="sk-avatar shimmer"></div>
+              <div className="sk-info">
+                <div className="sk-line w-60 shimmer"></div>
+                <div className="sk-line w-40 shimmer"></div>
               </div>
             </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  // --- RENDER: 2. RECEIVED REQUESTS (Premium Style) ---
-  const renderReceived = () => {
-    const list = receivedList.filter(i => i.status !== 'Accepted'); 
-    if (list.length === 0) return <div className="empty-state">No new requests received.</div>;
-
-    return (
-      <div className="card-grid">
-        {list.map((item) => (
-          <div className="interest-card accepted-card" key={item._id}>
-            <div className="premium-header">
-              <img src={defaultAvatar} alt="Profile" className="premium-avatar" />
-              
-              <h4>{item.senderId?.firstName} {item.senderId?.lastName}</h4>
-              <p className="premium-subtitle">
-                {item.senderId?.jobRole || "Member"} <br/>
-                <span className="loc">{item.senderId?.city}, {item.senderId?.state}</span>
-              </p>
-              <div className="gold-divider"></div>
-            </div>
-
-            <div className="premium-details pb-0">
-               {/* Details visible before accepting */}
-<div className="detail-row">
-  <span className="detail-label">ID </span>
-  <span className="detail-value">
-     {item.senderId?.uniqueId || "N/A"}
-  </span>
-</div>
-
-            </div>
-
-            <div className="card-actions-premium">
-               {item.status === 'PendingUser' || item.status === 'Pending' ? (
-                 <>
-                   <button onClick={() => handleRespond(item._id, 'accept')} className="btn-accept">Accept Request</button>
-                   <button onClick={() => handleRespond(item._id, 'decline')} className="btn-decline">Decline</button>
-                 </>
-               ) : (
-                 <span className={`status-pill ${item.status}`}>{item.status}</span>
-               )}
+            <div className="sk-body">
+              <div className="sk-line w-80 shimmer"></div>
+              <div className="sk-line w-50 shimmer"></div>
             </div>
           </div>
         ))}
@@ -165,63 +122,133 @@ const Interests = () => {
     );
   };
 
-  // --- RENDER: 3. SENT REQUESTS (Premium Style) ---
-  const renderSent = () => {
-    const list = sentList.filter(i => i.status !== 'Accepted'); 
-    if (list.length === 0) return <div className="empty-state">No pending sent requests.</div>;
-
+  const Card = ({ profile, status, type, onAction, item }) => {
+    const isAccepted = status === 'Accepted';
+    
     return (
-      <div className="card-grid">
-        {list.map((item) => (
-          <div className="interest-card accepted-card" key={item._id}>
-            <div className="premium-header">
-              <img src={defaultAvatar} alt="Profile" className="premium-avatar" />
-              
-              <h4>{item.receiverProfile?.name}</h4>
-              <div className="gold-divider"></div>
-            </div>
-
-            <div className="premium-details">
-                <div className="detail-row">
-                  <span className="detail-label">Status</span>
-                  <span className="detail-value">
-                    <span className={`status-text ${item.status}`}>{item.status}</span>
-                  </span>
-                </div>
-                
-                <div className="detail-row">
-                  <span className="detail-label">Date Sent</span>
-                  <span className="detail-value">{new Date(item.date).toLocaleDateString()}</span>
-                </div>
-            </div>
+      <div className="ic-card fade-in">
+        <div className="ic-header">
+          <img 
+            src={profile?.avatar || neutralAvatar} 
+            alt="User" 
+            className="ic-avatar" 
+          />
+          <div className="ic-user-info">
+            <h3 className="ic-name">{profile?.firstName || profile?.name || "Unknown"} {profile?.lastName || ""}</h3>
+            <p className="ic-role">{profile?.jobRole || "Member"}</p>
+            {isAccepted && <span className="ic-badge connected">Connected</span>}
           </div>
-        ))}
+        </div>
+
+        <div className="ic-body">
+       
+          <div className="ic-row">
+            <span className="ic-label">ID</span>
+            <span className="ic-value highlight">{profile?.uniqueId || "N/A"}</span>
+          </div>
+          
+          {isAccepted && (
+             <>
+               <div className="ic-row">
+                 <span className="ic-label">Mobile</span>
+                 <span className="ic-value">{profile?.mobileNumber || profile?.mobile || "Hidden"}</span>
+               </div>
+               <div className="ic-row">
+                 <span className="ic-label">Email</span>
+                 <span className="ic-value small-text">{profile?.email || "Hidden"}</span>
+               </div>
+             </>
+          )}
+
+          {type === 'sent' && !isAccepted && (
+            <div className="ic-row">
+               <span className="ic-label">Status</span>
+               <span className={`ic-status-pill ${status?.toLowerCase()}`}>{status}</span>
+            </div>
+          )}
+        </div>
+
+        {type === 'received' && !isAccepted && (
+          <div className="ic-actions">
+            <button onClick={() => onAction(item._id, 'accept')} className="ic-btn btn-accept">Accept</button>
+            <button onClick={() => onAction(item._id, 'decline')} className="ic-btn btn-decline">Decline</button>
+          </div>
+        )}
       </div>
     );
   };
+
+  const getDisplayData = () => {
+    if (activeTab === 'received') {
+      return receivedList.filter(i => i.status !== 'Accepted').map(item => ({
+        ...item, profile: item.senderId, type: 'received'
+      }));
+    }
+    if (activeTab === 'sent') {
+      return sentList.filter(i => i.status !== 'Accepted').map(item => ({
+        ...item, profile: item.receiverProfile, type: 'sent'
+      }));
+    }
+    if (activeTab === 'accepted') {
+      const acceptedSent = sentList.filter(i => i.status === 'Accepted').map(i => ({ ...i, profile: i.receiverProfile }));
+      const acceptedRec = receivedList.filter(i => i.status === 'Accepted').map(i => ({ ...i, profile: i.senderId }));
+      return [...acceptedSent, ...acceptedRec].map(item => ({ ...item, type: 'accepted' }));
+    }
+    return [];
+  };
+
+  const displayData = getDisplayData();
 
   return (
     <>
       <Navbar />
-      <div className="interests-container">
-        <div className="interests-header">
-          <h2>Interests & Connections</h2>
-          <div className="tabs-group">
-            <button className={`tab-link ${activeTab === 'received' ? 'active' : ''}`} onClick={() => setActiveTab('received')}>Received</button>
-            <button className={`tab-link ${activeTab === 'sent' ? 'active' : ''}`} onClick={() => setActiveTab('sent')}>Sent</button>
-            <button className={`tab-link ${activeTab === 'accepted' ? 'active' : ''}`} onClick={() => setActiveTab('accepted')}>My Contacts</button>
+      <Toaster position="top-center" />
+      
+      <div className="ic-container">
+        <div className="ic-nav-header">
+          <h2 className="ic-title">My Network</h2>
+          <div className="ic-tabs">
+            <button 
+              className={`ic-tab ${activeTab === 'received' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('received')}
+            >
+              Requests {receivedList.filter(i => i.status !== 'Accepted').length > 0 && <span className="ic-dot"></span>}
+            </button>
+            <button 
+              className={`ic-tab ${activeTab === 'sent' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('sent')}
+            >
+              Sent
+            </button>
+            <button 
+              className={`ic-tab ${activeTab === 'accepted' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('accepted')}
+            >
+              Contacts
+            </button>
           </div>
         </div>
 
-        <div className="interests-content">
-          {loading && <div className="loading-spinner">Loading...</div>}
-          {error && <div className="empty-state error">{error}</div>}
-          {!loading && !error && (
-            <>
-              {activeTab === 'received' && renderReceived()}
-              {activeTab === 'sent' && renderSent()}
-              {activeTab === 'accepted' && renderAccepted()}
-            </>
+        <div className="ic-content">
+          {loading ? (
+            renderSkeleton()
+          ) : displayData.length === 0 ? (
+            <div className="ic-empty">
+              <p>No connections found.</p>
+            </div>
+          ) : (
+            <div className="ic-grid">
+              {displayData.map((item) => (
+                <Card 
+                  key={item._id} 
+                  item={item}
+                  profile={item.profile} 
+                  status={item.status} 
+                  type={item.type} 
+                  onAction={handleRespond} 
+                />
+              ))}
+            </div>
           )}
         </div>
       </div>
