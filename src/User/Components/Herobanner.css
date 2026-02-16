@@ -1,287 +1,261 @@
-/* Import Luxury Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,600&family=Montserrat:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,600&family=Poppins:wght@300;400;500&display=swap');
 
-/* ============================
-   1. SECTION ARCHITECTURE
-   ============================ */
-.hero-section {
+:root {
+  --hb-gold: #fbd040;
+  --hb-gold-gradient: linear-gradient(135deg, #fbd040, #D32F2F, #fbd040, #fbd040, #fbd040);
+  --hb-black: #050505;      
+  --hb-white: #FFFFFF;
+  --hb-nav-height: 80px; 
+}
+
+/* =========================================
+   1. LAYOUT & CONTAINER
+   ========================================= */
+.hb-container {
   position: relative;
   width: 100%;
-  height: 70vh;
-  background-color: #030303; 
+  height: calc(100vh - var(--hb-nav-height));
+  min-height: 600px; 
+  background-color: var(--hb-black); 
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start; /* Desktop: Align Left */
+  align-items: center; 
   overflow: hidden;
 }
 
-.film-grain {
+/* =========================================
+   2. TEXTURE & STARS
+   ========================================= */
+.hb-texture-grain {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   z-index: 2;
-  opacity: 0.05;
+  opacity: 0.04;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* ============================
-   2. STAR FIELD ANIMATION (NEW)
-   ============================ */
-.star-field {
+.hb-star-layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1; /* Behind content, same level as phantom image wrapper */
-  perspective: 600px;
-}
-
-/* Layer 1: Small White Stars (Distant) */
-.stars-small {
-  width: 1px;
-  height: 1px;
-  background: transparent;
-  /* Complex Box Shadow to create hundreds of stars */
-  box-shadow: 
-    10vw 20vh #fff, 30vw 80vh #fff, 80vw 10vh #fff, 
-    50vw 50vh #fff, 90vw 90vh #fff, 20vw 40vh #fff,
-    40vw 20vh #fff, 70vw 60vh #fff, 15vw 90vh #fff;
-  animation: starFloat 100s linear infinite;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 3;
   opacity: 0.6;
+  pointer-events: none;
 }
 
-/* Layer 2: Medium Gold Stars (Closer) */
-.stars-medium {
-  width: 2px;
-  height: 2px;
+.hb-stars-sm {
+  width: 1px; height: 1px;
   background: transparent;
-  box-shadow: 
-    15vw 15vh #D4AF37, 60vw 30vh #D4AF37, 
-    85vw 70vh #fff, 25vw 85vh #D4AF37,
-    45vw 45vh #D4AF37, 95vw 15vh #fff,
-    5vw 60vh #D4AF37, 55vw 90vh #fff;
-  animation: starFloat 60s linear infinite;
-  opacity: 0.8;
-  /* Add a glow to gold stars */
-  filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.8));
+  box-shadow: 10vw 20vh #fff, 30vw 80vh #fff, 80vw 10vh #fff, 50vw 50vh #fff;
+  animation: hbStarFloat 120s linear infinite;
 }
 
-/* Create the "Moving" effect by duplicating shadows via pseudo-element */
-.stars-small::after, .stars-medium::after {
+.hb-stars-md {
+  width: 2px; height: 2px;
+  background: transparent;
+  box-shadow: 15vw 15vh #D4AF37, 60vw 30vh #D4AF37, 25vw 85vh #D4AF37;
+  animation: hbStarFloat 80s linear infinite;
+  filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.9));
+}
+
+.hb-stars-sm::after, .hb-stars-md::after {
   content: " ";
   position: absolute;
-  top: 100vh; /* Position duplicate below */
-  width: inherit;
-  height: inherit;
-  background: inherit;
-  box-shadow: inherit;
+  top: 100vh; width: inherit; height: inherit;
+  background: inherit; box-shadow: inherit;
 }
 
-@keyframes starFloat {
+@keyframes hbStarFloat {
   from { transform: translateY(0); }
-  to { transform: translateY(-100vh); } /* Move full screen height up */
+  to { transform: translateY(-100vh); }
 }
 
-/* ============================
-   3. PHANTOM IMAGE
-   ============================ */
-.phantom-wrapper {
+/* =========================================
+   3. BACKGROUND IMAGE
+   ========================================= */
+.hb-image-wrapper {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 0; /* Updated: Behind stars so stars float OVER the image slightly */
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
 }
 
-.phantom-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 25%;
-  opacity: 0.35; /* Slightly reduced opacity to let stars shine */
-  mix-blend-mode: luminosity; 
-  filter: grayscale(100%) contrast(1.1) brightness(0.9);
-  animation: subtleZoom 25s infinite alternate ease-in-out;
+.hb-background-img {
+  width: 100%; height: 100%;
+  object-fit: cover; 
+  /* DESKTOP: Focus center-right (for the landscape image) */
+  object-position: center right; 
+  opacity: 1; 
+  transition: opacity 0.5s ease;
 }
 
-.phantom-overlay {
+/* GRADIENT OVERLAY (Desktop: Left to Right) */
+.hb-overlay-gradient {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, transparent 0%, #030303 100%),
-              linear-gradient(to top, #030303 10%, transparent 50%);
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(
+    90deg, 
+    rgba(5,5,5,0.95) 0%,   
+    rgba(5,5,5,0.6) 45%,   
+    rgba(5,5,5,0.0) 100%   
+  );
+  z-index: 1;
 }
 
-@keyframes subtleZoom {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.1); }
-}
-
-/* ============================
-   4. CONTENT TYPOGRAPHY
-   ============================ */
-.hero-content {
+/* =========================================
+   4. TYPOGRAPHY & ANIMATIONS
+   ========================================= */
+.hb-content {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 1100px;
-  padding: 0 30px;
-  text-align: center;
+  max-width: 1200px;
+  padding: 0 40px;
+  margin: 0 auto;
+  text-align: left;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
 }
 
-.brand-tag-container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.tag-text {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  color: #e85415fa;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-.line {
-  width: 40px;
-  height: 1px;
-  background-color: rgba(212, 175, 55, 0.4);
-}
-
-.text-mask {
-  overflow: hidden;
-  display: block;
-  line-height: 1.2;
-}
-
-.reveal-text {
-  display: block;
-  transform: translateY(110%);
-  opacity: 0;
-  transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 1.2s ease;
-  animation: slideUpReveal 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-.hero-title {
+.hb-title {
   font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
+  font-weight: 600;
   margin: 0;
-  font-size: clamp(3rem, 7vw, 6.5rem);
-  color: #fff;
+  line-height: 1.1;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  color: var(--hb-white);
   letter-spacing: -0.02em;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-.gold-gradient {
-  background: linear-gradient(to right bottom, #fcf6ba, #bf953f, #b38728, #aa771c);
+.hb-text-mask { overflow: hidden; display: block; }
+
+.hb-reveal {
+  display: block;
+  transform: translateY(100%);
+  opacity: 0;
+  animation: hbSlideUp 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.hb-gold-text {
+  background: var(--hb-gold-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   font-style: italic;
-  padding-right: 0.1em;
+  padding-right: 10px;
 }
 
-.subtitle-mask {
-  margin-top: 24px;
-}
-
-.hero-subtitle {
-  font-family: 'Montserrat', sans-serif;
-  color: rgba(255, 255, 255, 0.7);
+.hb-subtitle {
+  font-family: 'Poppins', sans-serif;
+  color: #e0e0e0;
   font-weight: 300;
-  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-  line-height: 1.8;
-  letter-spacing: 0.05em;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 24px 0 0 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* ============================
-   5. MAGNETIC BUTTON
-   ============================ */
-.action-wrapper {
-  margin-top: 40px;
-  opacity: 0;
-  animation: simpleFade 1s ease forwards;
+.hb-delay-1 { animation-delay: 0.2s; }
+.hb-delay-2 { animation-delay: 0.4s; }
+.hb-delay-3 { animation-delay: 0.8s; }
+.hb-delay-4 { animation-delay: 1.2s; }
+
+@keyframes hbSlideUp {
+  to { transform: translateY(0); opacity: 1; }
 }
-
-.magnetic-btn {
-  position: relative;
-  background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  padding: 20px 60px;
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.5s ease;
-}
-
-.btn-text {
-  position: relative;
-  z-index: 2;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: white; /* Default White */
-  transition: color 0.4s ease;
-}
-
-.btn-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0%;
-  height: 100%;
-  background-color: #D4AF37;
-  z-index: 1;
-  transition: width 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-}
-
-.magnetic-btn:hover {
-  border-color: #D4AF37;
-}
-
-.magnetic-btn:hover .btn-fill {
-  width: 100%;
-}
-
-.magnetic-btn:hover .btn-text {
-  color: #000; /* Black text on Gold background */
-}
-
-/* ============================
-   6. ANIMATION TIMINGS
-   ============================ */
-.delay-1 { animation-delay: 0.2s; }
-.delay-2 { animation-delay: 0.4s; }
-.delay-3 { animation-delay: 0.6s; }
-.delay-4 { animation-delay: 0.9s; }
-.delay-5 { animation-delay: 1.2s; }
-
-@keyframes slideUpReveal {
-  0% { transform: translateY(110%); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes simpleFade {
+@keyframes hbFadeIn {
   to { opacity: 1; }
 }
 
-.desktop-break { display: block; }
+/* =========================================
+   5. BUTTONS
+   ========================================= */
+.hb-action-wrapper {
+  margin-top: 40px;
+  opacity: 0;
+  animation: hbFadeIn 1s ease forwards;
+}
 
-@media screen and (max-width: 768px) {
-  .hero-section { height: 70vh; }
-  .desktop-break { display: none; }
-  .hero-title { line-height: 1.1; }
-  .tag-text { font-size: 0.6rem; letter-spacing: 0.2em; }
-  .magnetic-btn { padding: 18px 40px; width: 100%; }
+.hb-glass-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 18px 50px;
+  cursor: pointer;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.hb-btn-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #fff;
+}
+
+.hb-glass-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #fff;
+}
+
+/* =========================================
+   6. MOBILE OPTIMIZATION
+   ========================================= */
+@media screen and (max-width: 900px) {
+  
+  .hb-container {
+    height: 90vh; 
+    align-items: flex-end; 
+    justify-content: center;
+    padding-bottom: 80px; 
+  }
+
+  /* Since we have a specific Mobile Image now, we center it. */
+  .hb-background-img {
+    object-position: center top; 
+  }
+
+  /* Mobile Gradient: Top to Bottom */
+  .hb-overlay-gradient {
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.0) 0%,    
+      rgba(0,0,0,0.0) 50%,   
+      rgba(0,0,0,0.6) 70%,   
+      rgba(0,0,0,0.95) 90%, 
+      rgba(0,0,0,1) 100%
+    );
+  }
+
+  .hb-content {
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .hb-title {
+    font-size: 3rem;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+  }
+
+  .hb-subtitle {
+    font-size: 1rem;
+    margin-top: 15px;
+    color: #f0f0f0;
+    text-shadow: 0 2px 10px rgba(0,0,0,1);
+  }
+
+  .hb-desktop-break { display: none; }
+
+  .hb-glass-btn {
+    width: 100%; 
+    padding: 16px 40px;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(5px);
+  }
 }
