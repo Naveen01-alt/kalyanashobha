@@ -7,48 +7,51 @@
   --transition-smooth: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* 1. CONTAINER BASE */
 .hb-container {
   position: relative;
   width: 100%;
-  height: 10vh;
-  height: 120dvh;
+  height: 100dvh; /* Dynamic viewport height for perfect mobile fit */
   background-color: #1a0202;
   overflow: hidden;
   display: flex;
   align-items: center;
 }
 
-/* 1. THE IMAGE (Unified Background) */
+/* 2. THE IMAGE (Unified Background) */
 .hb-image-wrapper {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
+  
 }
 
 .hb-background-img {
   width: 100%;
-  height: 150%;
+  height: 160%;
   object-fit: cover;
+   margin-top: 50px;
   /* Priority on top to prevent heads hiding under navbar */
   object-position: center 15%; 
-  padding-top: 100px;
+  transition: transform 0.5s ease;
   
 }
 
-/* 2. OVERLAY GRADIENTS (Professional Masking) */
+/* 3. OVERLAY GRADIENTS */
 .hb-overlay-gradient {
   position: absolute;
   inset: 0;
   z-index: 2;
+  
   /* Double gradient: one for top (navbar) and one for left (content) */
   background: 
-    linear-gradient(to bottom, rgba(26, 2, 2, 0.7) 0%, transparent 15%),
-    linear-gradient(to right, rgba(26, 2, 2, 0.9) 0%, rgba(26, 2, 2, 0.4) 40%, transparent 100%);
+    linear-gradient(to bottom, rgba(26, 2, 2, 0.6) 0%, transparent 20%),
+    linear-gradient(to right, rgba(26, 2, 2, 0.8) 0%, rgba(26, 2, 2, 0.2) 50%, transparent 100%);
 }
 
-/* 3. BLESSED RICE (Particles) */
+/* 4. BLESSED RICE (Particles) */
 .hb-star-layer {
   position: absolute;
   inset: 0;
@@ -61,8 +64,8 @@
   width: 100%; height: 100%;
   background-image: radial-gradient(var(--turmeric-gold) 1.5px, transparent 1.5px);
   background-size: 100px 100px;
-  animation: riceFall 10s linear infinite;
-  opacity: 0.5;
+  animation: riceFall 12s linear infinite;
+  opacity: 0.4;
 }
 
 @keyframes riceFall {
@@ -70,14 +73,13 @@
   100% { transform: translateY(100vh) rotate(20deg); }
 }
 
-/* 4. CONTENT (Placed on the left) */
+/* 5. CONTENT AREA */
 .hb-content {
   position: relative;
   z-index: 10;
   width: 100%;
   padding: 0 8%;
-  /* Push down slightly so content doesn't hit navbar */
-  margin-top: 60px; 
+  margin-top: 40px; 
 }
 
 .hb-title {
@@ -125,58 +127,73 @@
   box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3);
 }
 
-/* 5. RESPONSIVE ZOOM & POSITIONING */
-
-/* LAPTOP VIEW */
+/* 6. RESPONSIVE DESKTOP (Laptop) */
 @media (min-width: 1024px) {
   .hb-background-img {
-    /* Anchors couple to the right side and ensures heads are up top */
     object-position: 85% 15%; 
     animation: zoomOutLaptop 20s infinite alternate ease-in-out;
   }
   
   .hb-content {
-    max-width: 55%; /* Keeps text on the left side */
+    max-width: 55%; 
     text-align: left;
   }
 }
 
-/* MOBILE VIEW */
+/* 7. RESPONSIVE MOBILE (Small Screens) */
 @media (max-width: 1023px) {
   .hb-container {
     justify-content: center;
     text-align: center;
+    height: 100dvh;
   }
   
   .hb-background-img {
-    object-position: center 10%; 
-    animation: zoomInMobile 20s infinite alternate ease-in-out;
-    padding-top: 50px;
+    /* Adjusted to keep faces clear at the top center */
+    object-position: center 5%; 
+    height: 100%;
+    margin-top: 50px;
+    /* Subtle zoom to prevent over-scaling */
+    animation: zoomInMobile 15s infinite alternate ease-in-out;
   }
 
   .hb-overlay-gradient {
-    /* Stronger center darkening for mobile readability */
-    background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(26, 2, 2, 0.9) 100%);
+    /* Stronger bottom darkening to make text readable over the couple's clothes */
+    background: linear-gradient(to bottom, 
+      rgba(26, 2, 2, 0.3) 0%, 
+      rgba(26, 2, 2, 0.6) 40%, 
+      rgba(26, 2, 2, 1) 90%);
   }
 
   .hb-content {
-    padding: 10%;
+    padding: 0 24px;
     max-width: 100%;
-    margin-top: 350px; /* Moves text lower to show couple's faces */
+    position: absolute;
+    bottom: 8%; /* Anchors text to bottom so it doesn't cover faces */
+    margin-top: 0;
   }
 
-  .hb-subtitle { margin: 20px auto 0; }
+  .hb-subtitle { 
+    margin: 15px auto 0; 
+    font-size: 0.95rem;
+  }
+
+  .hb-glass-btn {
+    padding: 14px 30px;
+    font-size: 12px;
+    margin-top: 25px;
+  }
 }
 
-/* 6. KEYFRAMES */
+/* 8. ANIMATIONS */
 @keyframes zoomOutLaptop {
-  from { transform: scale(1.15); } /* Starts closer to the couple */
-  to { transform: scale(1); } /* Zooms out to reveal more scene */
+  from { transform: scale(1.1); }
+  to { transform: scale(1); }
 }
 
 @keyframes zoomInMobile {
   from { transform: scale(1); }
-  to { transform: scale(1.1); }
+  to { transform: scale(1.05); } /* Perfect subtle zoom for small screens */
 }
 
 .hb-text-mask { overflow: hidden; margin-bottom: 5px; }
@@ -189,4 +206,5 @@
 .hb-delay-2 { animation-delay: 0.4s; }
 .hb-delay-3 { animation-delay: 0.7s; }
 .hb-delay-4 { animation-delay: 1s; }
+
 @keyframes revealUp { to { transform: translateY(0); } }
