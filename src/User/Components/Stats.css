@@ -1,0 +1,84 @@
+/* Stats.css */
+
+:root {
+  --rose-50: #fff1f2;
+  --rose-100: #ffe4e6;
+  --rose-600: #e11d48;
+  --gray-500: #6b7280;
+  --gray-800: #1f2937;
+  --white: #ffffff;
+}
+
+.stats-section {
+  padding: 80px 0;
+  background-color: var(--rose-50);
+  font-family: sans-serif;
+}
+
+.stats-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.stats-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.stats-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--gray-800);
+  margin-bottom: 10px;
+}
+
+.stats-subtitle {
+  color: var(--gray-500);
+  font-size: 1.1rem;
+}
+
+/* Responsive Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on desktop */
+  }
+}
+
+/* Card Styling */
+.stats-card {
+  background: var(--white);
+  padding: 40px 20px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid var(--rose-100);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(225, 29, 72, 0.1);
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--rose-600);
+  margin: 0 0 8px 0;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gray-500);
+  margin: 0;
+}

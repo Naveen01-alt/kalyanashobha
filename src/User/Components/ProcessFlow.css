@@ -1,265 +1,233 @@
-/* --- VARIABLES & SETUP --- */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
+/* --- Professional Palette & Variables --- */
 :root {
-  /* Brand Consistency */
-  --pf-primary: #D32F2F;       /* Deep Red */
-  --pf-accent: #FFCA28;        /* Amber/Gold */
-  --pf-text-main: #1F2937;     /* Sharp Black */
-  --pf-text-sub: #6B7280;      /* Corporate Gray */
-  --pf-bg: #FFFFFF;
-  --pf-line: #E5E7EB;          /* Light Gray Line */
+  --kumkum-red: #8B0000;
+  --kumkum-gradient: linear-gradient(135deg, #8B0000 0%, #b30000 100%);
+  --turmeric-gold: #FFC107;
+  --turmeric-soft: #fff4d1;
+  --ivory-bg: #fffcf7;
+  --text-dark: #2d2d2d;
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .process-section {
-  background-color: var(--pf-bg);
   padding: 100px 20px;
-  font-family: 'Poppins', sans-serif;
+  background-color: var(--ivory-bg);
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
   overflow: hidden;
 }
 
 .process-container {
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
 }
 
-/* --- HEADER --- */
+/* --- Header Styling --- */
 .process-header {
   text-align: center;
   margin-bottom: 80px;
 }
 
 .process-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--pf-text-main);
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
+  font-size: 2.8rem;
+  color: var(--kumkum-red);
+  font-weight: 800;
+  margin-bottom: 10px;
 }
 
-/* Highlight "Process" in Red */
 .gold-text {
-  color: var(--pf-primary);
-  font-style: normal; /* Removed italics for corporate look */
+  color: var(--turmeric-gold);
 }
 
 .title-separator {
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--pf-primary), var(--pf-accent));
+  width: 80px;
+  height: 5px;
+  background: var(--kumkum-red);
   margin: 0 auto;
-  border-radius: 2px;
+  border-radius: 10px;
+  position: relative;
 }
 
-/* --- STEPS WRAPPER --- */
+.title-separator::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 100%;
+  background: var(--turmeric-gold);
+  right: -40px;
+  border-radius: 10px;
+}
+
+/* --- The Connecting Line Logic --- */
 .steps-wrapper {
   position: relative;
-  margin-bottom: 40px;
 }
 
-/* The Connecting Line (Desktop) */
 .process-line-container {
   position: absolute;
-  top: 40px; /* Aligns with center of 80px icons */
+  top: 55px; /* Center of the 110px icons */
   left: 10%;
-  width: 80%;
-  height: 2px;
-  z-index: 0;
+  right: 10%;
+  height: 3px;
+  z-index: 1;
 }
 
 .process-line {
   width: 100%;
   height: 100%;
-  /* Gradient line from Red to Amber */
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    var(--pf-line) 10%, 
-    var(--pf-line) 90%, 
-    transparent 100%
-  );
-}
-
-/* The Grid */
-.steps-grid {
-  display: flex;
-  justify-content: space-between;
+  background: #e0e0e0;
   position: relative;
-  z-index: 1;
-  gap: 24px;
+  overflow: hidden;
 }
 
-/* --- INDIVIDUAL STEP CARD --- */
+/* The Animated "Flow" Effect on the line */
+.process-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--kumkum-red), 
+    var(--turmeric-gold), 
+    transparent);
+  animation: flowLine 4s infinite linear;
+}
+
+@keyframes flowLine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* --- Steps Grid & Cards --- */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+}
+
 .step-card {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  padding: 0 10px;
-  transition: transform 0.3s ease;
-  opacity: 0;
+  padding: 20px;
+  transition: var(--transition);
 }
 
+/* Hover Effect for the whole card */
 .step-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px);
 }
 
-/* Icon Styling */
+/* --- Icon Wrapper & Circle --- */
 .icon-wrapper {
   position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 24px auto;
+  width: 110px;
+  height: 110px;
+  margin-bottom: 25px;
 }
 
 .icon-circle {
   width: 100%;
   height: 100%;
-  background-color: #fff;
-  border: 2px solid var(--pf-line); /* Default gray border */
+  background: white;
+  border: 3px solid var(--turmeric-gold);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--pf-text-sub);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
-}
-
-/* Hover Effect: Border turns Red, Icon turns Red */
-.step-card:hover .icon-circle {
-  border-color: var(--pf-primary);
-  color: var(--pf-primary);
-  box-shadow: 0 10px 25px rgba(211, 47, 47, 0.15);
+  color: var(--kumkum-red);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+  z-index: 2;
+  position: relative;
 }
 
 .icon-circle svg {
-  width: 32px;
-  height: 32px;
+  width: 45px;
+  height: 45px;
 }
 
-/* Number Badge (Amber Background) */
+/* Flip and Color change on Hover */
+.step-card:hover .icon-circle {
+  background: var(--kumkum-gradient);
+  color: white;
+  border-color: var(--kumkum-red);
+  transform: rotateY(180deg);
+  box-shadow: 0 15px 35px rgba(139, 0, 0, 0.2);
+}
+
 .step-number {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: var(--pf-accent); /* Amber */
-  color: #000; /* Black text for readability */
-  width: 28px;
-  height: 28px;
+  background: var(--kumkum-red);
+  color: white;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  font-size: 0.85rem;
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 3px solid var(--ivory-bg);
+  z-index: 3;
 }
 
-/* Text Content */
+/* --- Content Styling --- */
 .step-title {
-  font-size: 1.1rem;
-  color: var(--pf-text-main);
+  font-size: 1.35rem;
+  color: var(--kumkum-red);
   margin-bottom: 12px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .step-desc {
-  font-size: 0.9rem;
-  color: var(--pf-text-sub);
+  font-size: 0.95rem;
+  color: #666;
   line-height: 1.6;
-  max-width: 260px;
-  margin: 0 auto;
 }
 
-/* --- ANIMATIONS --- */
+/* --- Entrance Animation --- */
 .fade-up {
-  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  animation: slideUp 0.8s ease-out forwards;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* --- RESPONSIVE DESIGN --- */
-
-/* Tablet & Mobile */
-@media (max-width: 900px) {
-  .process-header { margin-bottom: 50px; }
-  
+/* --- Responsive Layout --- */
+@media (max-width: 1024px) {
   .steps-grid {
-    flex-direction: column;
-    align-items: flex-start;
-    padding-left: 20px;
-    gap: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
   }
-
-  /* Hide Horizontal Line */
-  .process-line-container { display: none; }
-
-  /* Create Vertical Line (Red to Amber gradient) */
-  .steps-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 60px; /* Align with center of 80px icon (20px padding + 40px half-width) */
-    width: 2px;
-    background: linear-gradient(to bottom, var(--pf-primary), var(--pf-accent));
-    z-index: 0;
-  }
-
-  .step-card {
-    display: flex;
-    text-align: left;
-    margin-bottom: 48px;
-    align-items: flex-start;
-    width: 100%;
-    position: relative;
-    padding: 0;
-  }
-  
-  .step-card:hover {
-    transform: translateX(5px);
-  }
-
-  .icon-wrapper {
-    margin: 0 32px 0 0; 
-    flex-shrink: 0;
-  }
-
-  .step-content {
-    padding-top: 10px;
-  }
-
-  .step-desc {
-    margin: 0;
-    max-width: 100%;
+  /* Hide horizontal line on tablet/mobile */
+  .process-line-container {
+    display: none;
   }
 }
 
-/* Small Mobile */
-@media (max-width: 480px) {
-  .process-section { padding: 60px 20px; }
-  
-  .process-title { font-size: 1.2rem; }
-  
-  /* Adjust vertical line for smaller screen */
-  .steps-wrapper::before {
-    left: 40px; /* Assuming container padding removed or shifted */
+@media (max-width: 600px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .steps-grid { padding-left: 0; }
-  
-  /* Make icons slightly smaller on tiny screens */
-  .icon-wrapper {
-    width: 60px; height: 60px;
-    margin-right: 20px;
+  .process-title {
+    font-size: 2.2rem;
   }
-  
-  .steps-wrapper::before {
-    left: 30px; /* Center of 60px icon */
-  }
-  
-  .icon-circle svg { width: 24px; height: 24px; }
-  .step-number { width: 24px; height: 24px; font-size: 0.75rem; }
 }

@@ -1,446 +1,297 @@
-/* --- GLOBAL VARIABLES & FONTS --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
+/* --- Global Variables & Reset --- */
 :root {
-  --primary-red: #D32F2F; /* Matrimony Red */
-  --primary-black: #1A1A1A; /* Deep Black for selected state */
-  --text-gray: #757575;
-  --border-color: #E0E0E0;
-  --progress-bg: #F5F5F5;
-  --progress-fill: #FFC107; /* The exact Yellow/Orange */
-  --bg-white: #FFFFFF;
-  --radius-md: 12px;
-  --radius-sm: 8px;
-  --shadow-btn: 0 4px 12px rgba(211, 47, 47, 0.2);
-  --shadow-float: 0 8px 30px rgba(0, 0, 0, 0.08);
-  --easing-apple: cubic-bezier(0.25, 1, 0.5, 1); /* Advanced Physics Easing */
+  --primary-red: #D32F2F;
+  --primary-hover: #B71C1C;
+  --bg-soft: #F8F9FA;
+  --text-dark: #2D3436;
+  --text-light: #636E72;
+  --border-color: #DFE6E9;
+  --error-color: #FF7675;
+  --white: #FFFFFF;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--bg-white);
-  color: var(--primary-black);
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-font-smoothing: antialiased;
-  scroll-behavior: smooth;
 }
 
-/* --- CONTAINER --- */
-.app-container {
-  max-width: 600px !important; 
-  margin: 60px auto !important;
+.reg-page-wrapper {
+  background-color: var(--bg-soft);
   min-height: 100vh;
+  padding: 120px 20px; /* Standard desktop padding from top */
   display: flex;
-  flex-direction: column;
-  background: white;
-  padding-bottom: 90px;
-  position: relative;
-  overflow-x: hidden; /* Prevent horizontal scroll during slide */
-}
-
-/* --- PROGRESS HEADER --- */
-.progress-header {
-  padding: 24px 24px 10px;
-  background: white;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(10px); /* Glassmorphism on scroll */
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
-.step-indicator-text {
-  font-size: 11px;
-  font-weight: 700;
-  color: #757575;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.progress-track {
-  width: 100%;
-  height: 6px;
-  background-color: var(--progress-bg);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Advanced Shimmer Progress Bar */
-.progress-fill {
-  height: 100%;
-  background-color: var(--progress-fill);
-  border-radius: 3px;
-  transition: width 0.6s var(--easing-apple);
-  position: relative;
-  overflow: hidden;
-}
-
-/* The shimmer effect overlay */
-.progress-fill::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-image: linear-gradient(
-    -45deg,
-    rgba(255, 255, 255, 0.2) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.2) 75%,
-    transparent 75%,
-    transparent
-  );
-  background-size: 20px 20px;
-  animation: moveStripe 1s linear infinite;
-  opacity: 0.6;
-}
-
-@keyframes moveStripe {
-  0% { background-position: 0 0; }
-  100% { background-position: 20px 20px; }
-}
-
-/* --- CONTENT AREA --- */
-.content-area {
-  padding: 10px 24px;
-  flex: 1;
-  position: relative;
-}
-
-.reg-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--primary-black);
-  margin-bottom: 8px;
-  margin-top: 20px;
-  letter-spacing: -0.5px;
-}
-
-.reg-subtitle {
-  font-size: 15px;
-  color: var(--text-gray);
-  margin-bottom: 32px;
-  line-height: 1.5;
-  font-weight: 400;
-}
-
-/* --- SECTION LABELS --- */
-.section-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #424242;
-  margin-bottom: 12px;
-  margin-top: 24px;
-}
-
-/* --- SELECTION GRID --- */
-.selection-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.selection-btn {
-  background: white;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: 14px 0;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--primary-black);
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-  position: relative;
-  overflow: hidden;
+  align-items: flex-start;
+  font-family: 'Inter', -apple-system, sans-serif;
 }
 
-/* Button Press Animation */
-.selection-btn:active {
-  transform: scale(0.96);
-}
-
-.selection-btn.selected {
-
-  border:solid 2px #D32F2F;
-  
-
-  font-weight: 600;
-  animation: popIn 0.3s var(--easing-apple);
-}
-
-@keyframes popIn {
-  0% { transform: scale(0.9); }
-  60% { transform: scale(1.02); }
-  100% { transform: scale(1); }
-}
-
-.selection-btn:hover:not(.selected) {
-  background-color: #FAFAFA;
-  border-color: #BDBDBD;
-  transform: translateY(-1px);
-}
-
-/* --- INPUT FIELDS --- */
-.input-group {
-  margin-bottom: 24px;
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-.input-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-gray);
-  margin-bottom: 8px;
-  transition: color 0.2s;
-}
-
-.input-group input,
-.select-wrapper select {
+/* --- Registration Card --- */
+.reg-card {
+  background: var(--white);
   width: 100%;
-  padding: 14px 16px;
-  font-size: 15px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  color: var(--primary-black);
-  background: white;
-  transition: all 0.2s var(--easing-apple);
-  box-sizing: border-box;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-/* Advanced Focus State */
-.input-group input:focus,
-.select-wrapper select:focus {
-  border-color: var(--primary-black);
-  outline: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Soft shadow lift */
-  transform: translateY(-2px); /* Subtle lift */
-}
-
-/* Focus within label highlight */
-.input-group:focus-within label {
-  color: var(--primary-black);
-  font-weight: 600;
-}
-
-.input-group.has-error input,
-.input-group.has-error select {
-  border-color: #D32F2F;
-  background-color: #FFF8F8;
-  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-}
-
-@keyframes shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-  40%, 60% { transform: translate3d(4px, 0, 0); }
-}
-
-.error-msg {
-  display: block;
-  color: #D32F2F;
-  font-size: 12px;
-  margin-top: 6px;
-  font-weight: 500;
-  animation: slideDown 0.2s ease-out;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Custom Select Arrow */
-.select-wrapper {
+  max-width: 600px;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
   position: relative;
 }
 
-.select-wrapper svg {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-gray);
-  pointer-events: none;
-  transition: transform 0.2s;
-}
-
-.select-wrapper select:focus + svg {
-  transform: translateY(-50%) rotate(180deg); /* Rotate arrow on open */
-}
-
-/* --- FIXED BOTTOM ACTION AREA --- */
-.action-area {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: white;
-  padding: 16px 24px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+/* --- Stage & Progress Indicator --- */
+.stage-indicator {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-  z-index: 100;
-  backdrop-filter: blur(5px);
-  background: rgba(255,255,255,0.95);
+  position: relative;
+  margin-bottom: 50px;
 }
 
-/* Continue Button */
-.btn-continue {
-  background-color: var(--primary-red);
-  color: white;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 14px 32px;
-  font-size: 15px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  box-shadow: var(--shadow-btn);
-  transition: all 0.2s var(--easing-apple);
+.progress-line {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  height: 3px;
+  background: #EEE;
+  width: 100%;
+  z-index: 1;
+}
+
+.progress-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  height: 100%;
+  background: var(--primary-red);
+  width: var(--progress, 0%); /* Dynamic width via JS */
+  transition: width 0.5s ease;
+}
+
+.stage-dot {
+  width: 32px;
+  height: 32px;
+  background: var(--white);
+  border: 3px solid #EEE;
+  border-radius: 50%;
+  z-index: 2;
   position: relative;
+  transition: var(--transition);
+}
+
+.stage-dot.active {
+  border-color: var(--primary-red);
+  background: var(--primary-red);
+}
+
+.dot-label {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.stage-dot.active .dot-label {
+  color: var(--primary-red);
+}
+
+/* --- Typography & UI Components --- */
+.stage-title {
+  font-size: 24px;
+  color: var(--text-dark);
+  margin-bottom: 25px;
+  font-weight: 800;
+}
+
+.section-label {
+  display: block;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.field-hint {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 6px;
+  margin-top: 15px;
+  white-space: nowrap;
+}
+
+/* --- Bubble Button UI --- */
+.bubble-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.bubble-btn {
+  padding: 10px 18px;
+  border-radius: 50px;
+  border: 2px solid var(--border-color);
+  background: transparent;
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.bubble-btn:hover {
+  border-color: var(--primary-red);
+  color: var(--primary-red);
+}
+
+.bubble-btn.active {
+  background: var(--primary-red);
+  color: var(--white);
+  border-color: var(--primary-red);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+  transform: translateY(-2px);
+}
+
+/* --- Inputs --- */
+.modern-input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+  font-size: 15px;
+  transition: var(--transition);
+  box-sizing: border-box;
+  background-color: var(--white);
+}
+
+.modern-input:focus {
+  outline: none;
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.05);
+}
+
+select.modern-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23636E72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 16px;
+}
+
+/* --- Layout Grids --- */
+.dual-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dob-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 12px;
+}
+
+/* --- Signature UI --- */
+.sig-wrapper {
+  background: white;
+  border: 2px dashed #FAB1A0;
+  border-radius: 12px;
+  margin-top: 10px;
   overflow: hidden;
 }
 
-/* Ripple effect on button hover (subtle brightness) */
-.btn-continue::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255,255,255,0.1);
-  opacity: 0;
-  transition: opacity 0.2s;
+.sigCanvas {
+  width: 100%;
+  height: 140px;
+  cursor: crosshair;
 }
 
-.btn-continue:hover::after {
-  opacity: 1;
+/* --- Navigation --- */
+.nav-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
 }
 
-.btn-continue:active {
-  transform: scale(0.96);
-  box-shadow: none;
+.btn-primary {
+  flex: 2;
+  background: var(--primary-red);
+  color: var(--white);
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-.btn-continue:disabled {
-  background-color: #EF9A9A;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-}
-
-/* Back Button */
-.back-btn {
-  background: white;
-  border: 1px solid #E0E0E0;
-  border-radius: var(--radius-sm);
-  color: var(--text-gray);
-  padding: 12px 24px;
-  font-size: 14px;
+.btn-secondary {
+  flex: 1;
+  background: transparent;
+  color: var(--text-dark);
+  border: 2px solid var(--border-color);
+  padding: 16px;
+  border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.back-btn:hover {
-  background-color: #F5F5F5;
-  color: var(--primary-black);
-  transform: translateY(-1px);
+/* --- Animations --- */
+.slide-in {
+  animation: slideFade 0.5s ease forwards;
 }
 
-.back-btn:active {
-  transform: scale(0.96);
-}
-
-/* --- SIGNATURE (STEP 9) --- */
-.sigCanvas {
-  border-radius: 8px;
-  cursor: crosshair;
-  background-color: #FAFAFA;
-}
-
-/* --- ADVANCED ANIMATIONS (Apple Style) --- */
-
-/* 1. Page Slide Logic */
-.slide-in-right {
-  animation: enterFromRight 0.5s var(--easing-apple) forwards;
-}
-
-.slide-in-left {
-  animation: enterFromLeft 0.5s var(--easing-apple) forwards;
-}
-
-@keyframes enterFromRight {
-  0% { opacity: 0; transform: translateX(30px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes enterFromLeft {
-  0% { opacity: 0; transform: translateX(-30px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-/* 2. Staggered Children Animation */
-/* This targets elements with class .stagger-item inside the container */
-.slide-in-right .stagger-item,
-.slide-in-left .stagger-item {
-  opacity: 0;
-  animation: fadeUpStagger 0.5s var(--easing-apple) forwards;
-}
-
-@keyframes fadeUpStagger {
+@keyframes slideFade {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Add delays to children for the cascade effect */
-.stagger-item:nth-child(1) { animation-delay: 0.05s; }
-.stagger-item:nth-child(2) { animation-delay: 0.1s; }
-.stagger-item:nth-child(3) { animation-delay: 0.15s; }
-.stagger-item:nth-child(4) { animation-delay: 0.2s; }
-.stagger-item:nth-child(5) { animation-delay: 0.25s; }
-.stagger-item:nth-child(6) { animation-delay: 0.3s; }
-.stagger-item:nth-child(7) { animation-delay: 0.35s; }
-.stagger-item:nth-child(8) { animation-delay: 0.4s; }
-
-/* --- DESKTOP TWEAKS --- */
-@media (min-width: 481px) {
-  .app-container {
-    max-width: 420px;
-    margin: 10% auto !important;
-    border-radius: 20px;
-    box-shadow: var(--shadow-float);
-    min-height: auto;
-    padding-bottom: 20px;
-    border: 1px solid #F0F0F0;
-    overflow: hidden;
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 600px) {
+  .reg-page-wrapper {
+    padding: 80px 15px 40px 15px; /* Reduced gap from navbar */
   }
-  
-  .action-area {
-    position: static;
-    box-shadow: none;
+
+  .reg-card {
     padding: 24px;
-    margin-top: 20px;
-    background: transparent;
-    backdrop-filter: none;
+    border-radius: 20px; /* Slightly rounded for modern feel */
+  }
+
+  .slide-in {
+    animation: slideFade 0.5s ease forwards; /* Animation maintained */
+  }
+
+  .dual-input {
+    grid-template-columns: 1fr; /* Stack names on top of each other */
+    gap: 0;
+  }
+
+  /* FORCING BIRTHDAY ON SINGLE LINE */
+  .dob-grid {
+    grid-template-columns: 1fr 1fr 1.2fr; 
+    gap: 8px;
+    display: grid !important; 
+  }
+
+  .field-hint {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  .bubble-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 buttons per row */
+  }
+
+  .dot-label {
+    font-size: 9px;
+    top: 35px;
   }
 }

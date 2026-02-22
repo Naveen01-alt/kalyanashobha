@@ -19,11 +19,11 @@ const HeroBanner = () => {
       <div className="hb-image-wrapper">
         <picture>
           {/* Mobile Image: Shows when screen is 900px or less */}
-          <source media="(max-width: 900px)" srcSet="/kalayanashobha11.png" />
+          <source media="(max-width: 900px)" srcSet="/kalyan.jpg" />
           
           {/* Desktop Image: Default fallback */}
           <img 
-            src="/kalyanashobha0.png" 
+            src="/kalyan.jpg" 
             alt="Happy Telugu Couple" 
             className="hb-background-img" 
           />

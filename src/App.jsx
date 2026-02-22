@@ -13,7 +13,8 @@ import Payments from "./User/Pages/Payments/Payments.jsx";
 import Myprofile from "./User/Pages/MyProfile/MyProfile.jsx";
 import Interests from "./User/Pages/Interests.jsx";
 import UserVendor from "./User/Pages/VendorList/VendorList.jsx"; 
-
+import Stats from "./User/Components/Stats.jsx";
+import SuccessStories from "./User/Components/SuccessStories.jsx";
 // --- AGENT PORTAL IMPORTS ---
 import AgentLogin from "./Agents/AgentLogin.jsx"; 
 import AgentDashboard from "./Agents/AgentDashboard.jsx"; 
@@ -71,6 +72,8 @@ function App() {
               <Navbar />
               <Herobanner />
               <ProcessFlow />
+              <Stats />
+              <SuccessStories />
               <Footer />
             </>
           </PublicRoute>
